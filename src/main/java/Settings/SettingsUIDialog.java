@@ -11,7 +11,13 @@ public class SettingsUIDialog extends JDialog {
     private JButton buttonCancel;
     private JTextField SelectedPath;
     private JButton buttonLoadFile;
+    private JLabel Title;
     public String filePath = "";
+
+    public SettingsUIDialog(String title) {
+        Title.setText(title);
+        createComponent();
+    }
 
     public void createComponent() {
         setContentPane(contentPane);
@@ -61,9 +67,8 @@ public class SettingsUIDialog extends JDialog {
 
         int returnValue = jfc.showOpenDialog(null);
         if (returnValue == JFileChooser.APPROVE_OPTION) {
-            return jfc.getSelectedFile().getPath() ;
-        }
-        else return "";
+            return jfc.getSelectedFile().getPath();
+        } else return "";
     }
 
     private void onOK() {

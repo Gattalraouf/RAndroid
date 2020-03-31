@@ -1,5 +1,6 @@
 package Components;
 
+import Settings.SettingsUIDialog;
 import com.intellij.openapi.components.*;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,16 @@ public class UIOSettingsScreen implements Serializable, ProjectComponent,
         PersistentStateComponent<UIOSettingsScreen> {
 
     public String UIOFilePath = "";
+
+    public void openComponent() {
+        SettingsUIDialog dialog = new SettingsUIDialog("Refactoring UIO code smell");
+        dialog.pack();
+        dialog.setSize(600,200);
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+        UIOFilePath = dialog.filePath;
+        System.out.println(UIOFilePath);
+    }
 
     @Nullable
     @Override
