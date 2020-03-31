@@ -6,6 +6,9 @@ import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.io.Serializable;
+import java.util.ArrayList;
+
+import Utils.CSVReadingManager;
 
 
 @State(
@@ -18,6 +21,7 @@ public class UIOSettingsScreen implements Serializable, ProjectComponent,
         PersistentStateComponent<UIOSettingsScreen> {
 
     public String UIOFilePath = "";
+    public ArrayList<String[]> file;
 
     public void openComponent() {
         SettingsUIDialog dialog = new SettingsUIDialog("Refactoring UIO code smell");
@@ -26,7 +30,7 @@ public class UIOSettingsScreen implements Serializable, ProjectComponent,
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
         UIOFilePath = dialog.filePath;
-        System.out.println(UIOFilePath);
+        file = CSVReadingManager.ReadFile(UIOFilePath);
     }
 
     @Nullable
