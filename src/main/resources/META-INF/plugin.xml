@@ -1,0 +1,41 @@
+<idea-plugin>
+    <id>pfe.esi.Gattal-Hammache.RAndroid</id>
+    <name>Randroid</name>
+    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+    <description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+
+    <actions>
+        <group id="RAndroid.TopMenu"
+               text="_RAndroid"
+               description="RAndroid toolbar menu">
+            <add-to-group group-id="MainMenu" anchor="last"/>
+            <action id="UIO"
+                    class="Actions.RefactorUIO"
+                    text="_Refactor UIO"
+                    description="Refactoring UIO Code smell"/>
+        </group>
+    </actions>
+
+    <project-components>
+        <!-- Add your project components here -->
+        <component>
+            <implementation-class>
+                Components.UIOSettingsScreen
+            </implementation-class>
+        </component>
+    </project-components>
+
+</idea-plugin>
