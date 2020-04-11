@@ -1,0 +1,10 @@
+package core.ast;
+
+import com.intellij.psi.PsiVariable;
+
+public abstract class VariableDeclarationObject {
+
+    public abstract PsiVariable getVariableDeclaration();
+
+    public abstract String getName();
+}

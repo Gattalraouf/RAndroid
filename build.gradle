@@ -8,6 +8,9 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
+apply plugin: 'java'
+apply plugin: 'org.jetbrains.intellij'
+
 repositories {
     mavenCentral()
 }
@@ -21,8 +24,11 @@ dependencies {
 intellij {
     version '192.7142.36'
     type 'IC'
+    pluginName 'RAndroid'
+    downloadSources true
+    intellij.updateSinceUntilBuild false
     // Require the Android plugin, Gradle will match the plugin version to intellij.version
-    plugins 'android'
+    plugins 'java'
     alternativeIdePath '/snap/android-studio/84/android-studio/'
 }
 

@@ -23,7 +23,7 @@
                description="RAndroid toolbar menu">
             <add-to-group group-id="MainMenu" anchor="last"/>
             <action id="UIO"
-                    class="Actions.RefactorUIO"
+                    class="Actions.RefactorIOD"
                     text="_Refactor UIO"
                     description="Refactoring UIO Code smell"/>
         </group>
@@ -33,7 +33,7 @@
         <!-- Add your project components here -->
         <component>
             <implementation-class>
-                Components.UIOSettingsScreen
+                Components.IODSettingsScreen
             </implementation-class>
         </component>
     </project-components>
