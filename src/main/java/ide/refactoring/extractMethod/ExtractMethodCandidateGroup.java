@@ -35,7 +35,7 @@ public class ExtractMethodCandidateGroup implements Refactoring {
     }
 
     /**
-     * Returns a method from which code is proposed to be extracted into a separate method.
+     *  a method from which code is proposed to be extracted into a separate method.
      */
     public @NotNull
     PsiMethod getMethod() {

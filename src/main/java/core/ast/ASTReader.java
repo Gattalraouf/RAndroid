@@ -30,6 +30,12 @@ public class ASTReader {
         indicator.setFraction(1.0);
     }
 
+    public ASTReader(ProjectInfo project, PsiClass psiClass){
+        systemObject = new SystemObject();
+        examinedProject = project;
+        systemObject.addClass(processTypeDeclaration(psiClass));
+    }
+
     private ClassObject processTypeDeclaration(PsiClass psiClass) {
         final ClassObject classObject = new ClassObject(psiClass);
         classObject.setName(psiClass.getQualifiedName());

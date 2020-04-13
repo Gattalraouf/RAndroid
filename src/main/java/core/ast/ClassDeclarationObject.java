@@ -97,6 +97,16 @@ public abstract class ClassDeclarationObject {
         return null;
     }
 
+    public MethodObject getMethodByName(String methodName) {
+        ListIterator<MethodObject> mi = getMethodIterator();
+        while (mi.hasNext()) {
+            MethodObject mo = mi.next();
+            if (mo.getName().equals(methodName))
+                return mo;
+        }
+        return null;
+    }
+
     public MethodObject getMethod(SuperMethodInvocationObject smio) {
         ListIterator<MethodObject> mi = getMethodIterator();
         while (mi.hasNext()) {

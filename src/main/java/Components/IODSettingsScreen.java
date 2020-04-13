@@ -20,17 +20,12 @@ import Utils.CSVReadingManager;
 public class IODSettingsScreen implements Serializable, ProjectComponent,
         PersistentStateComponent<IODSettingsScreen> {
 
-    public String UIOFilePath = "";
-    public ArrayList<String[]> file;
-
     public void openComponent() {
         SettingsUIDialog dialog = new SettingsUIDialog("Refactoring IOD code smell");
         dialog.pack();
         dialog.setSize(600,200);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
-        UIOFilePath = dialog.filePath;
-        file = CSVReadingManager.ReadFile(UIOFilePath);
     }
 
     @Nullable
