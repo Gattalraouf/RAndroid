@@ -45,7 +45,7 @@ public class PDGSliceUnion {
             for (AbstractVariable usedVariable : usedVariables) {
                 if (usedVariable instanceof PlainVariable) {
                     PlainVariable plainVariable = (PlainVariable) usedVariable;
-                    if (!alreadyExaminedObjectReferences.contains(plainVariable)
+                    if (localVariableCriterion != null && !alreadyExaminedObjectReferences.contains(plainVariable)
                             && !localVariableCriterion.getInitialVariable().equals(plainVariable)) {
                         Map<CompositeVariable, LinkedHashSet<PDGNode>> definedAttributeNodeCriteriaMap =
                                 pdg.getDefinedAttributesOfReference(plainVariable);
@@ -504,7 +504,7 @@ public class PDGSliceUnion {
     boolean satisfiesRules() {
         return !sliceEqualsMethodBody() && !sliceContainsOnlyOneNodeCriterionAndDeclarationOfVariableCriterion() &&
                 !declarationOfVariableCriterionIsDuplicated() &&
-                !variableCriterionIsReturnedVariableInOriginalMethod() && (sliceNodes.size() > nodeCriteria.size()) &&
+                !variableCriterionIsReturnedVariableInOriginalMethod() && (sliceNodes.size() >= nodeCriteria.size()) &&
                 !allNodeCriteriaAreDuplicated() && !returnStatementIsControlDependentOnSliceNode() && !sliceContainsReturnStatement() &&
                 !containsDuplicateNodeWithStateChangingMethodInvocation() &&
                 !nonDuplicatedSliceNodeAntiDependsOnNonRemovableNode() &&

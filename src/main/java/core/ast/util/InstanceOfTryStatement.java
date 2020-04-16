@@ -5,8 +5,8 @@ import com.intellij.psi.PsiTryStatement;
 
 public class InstanceOfTryStatement implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiTryStatement;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiTryStatement;
+    }
 
 }

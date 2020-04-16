@@ -5,8 +5,8 @@ import com.intellij.psi.PsiStatement;
 
 public class InstanceOfDoStatement implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiDoWhileStatement;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiDoWhileStatement;
+    }
 
 }

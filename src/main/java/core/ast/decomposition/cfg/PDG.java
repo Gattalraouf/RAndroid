@@ -1,8 +1,11 @@
 package core.ast.decomposition.cfg;
 
 import com.intellij.psi.*;
+import core.ast.AbstractMethodDeclaration;
+import core.ast.FieldObject;
+import core.ast.ParameterObject;
+import core.ast.VariableDeclarationObject;
 import org.jetbrains.annotations.NotNull;
-import core.ast.*;
 
 import java.util.*;
 
@@ -190,6 +193,17 @@ public class PDG extends Graph {
         }
         return nodeCriteria;
     }
+
+    public Set<PDGNode> getNodesIncludingInstances(PsiElement instance) {
+        Set<PDGNode> nodeCriteria = new LinkedHashSet<>();
+        for (GraphNode node : nodes) {
+            PDGNode pdgNode = (PDGNode) node;
+            if (pdgNode.getASTStatement() == instance)
+                nodeCriteria.add(pdgNode);
+        }
+        return nodeCriteria;
+    }
+
 
     private void handleThrowExceptionNodes() {
         for (GraphNode node : this.nodes) {

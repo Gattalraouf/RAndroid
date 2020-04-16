@@ -16,7 +16,7 @@ public class CSVReadingManager {
             String[] line;
             while ((line = reader.readNext()) != null) {
                 file.add(line);
-                System.out.println(line[0] + " | " + line[1] );
+                System.out.println(line[0] + " | " + line[1]);
             }
         } catch (IOException | CsvValidationException e) {
             e.printStackTrace();

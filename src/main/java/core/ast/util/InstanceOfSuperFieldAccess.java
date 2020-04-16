@@ -5,8 +5,8 @@ import com.intellij.psi.PsiSuperExpression;
 
 public class InstanceOfSuperFieldAccess implements ExpressionInstanceChecker {
 
-	public boolean instanceOf(PsiExpression expression) {
-		return expression instanceof PsiSuperExpression;
-	}
+    public boolean instanceOf(PsiExpression expression) {
+        return expression instanceof PsiSuperExpression;
+    }
 
 }

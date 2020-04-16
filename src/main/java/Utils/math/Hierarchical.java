@@ -1,8 +1,10 @@
 package Utils.math;
 
 import core.distance.Entity;
+
 import java.util.ArrayList;
 import java.util.HashSet;
+
 import static Utils.math.DoubleArray.*;
 
 public class Hierarchical extends Clustering {

@@ -2,8 +2,8 @@ package core.ast.decomposition;
 
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.SmartPsiElementPointer;
-import org.jetbrains.annotations.NotNull;
 import core.ast.util.ExpressionExtractor;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 

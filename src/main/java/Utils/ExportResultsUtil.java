@@ -1,6 +1,5 @@
 package Utils;
 
-import Utils.IntelliJDeodorantBundle;
 import ide.refactoring.Refactoring;
 
 import javax.swing.*;

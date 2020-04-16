@@ -1,9 +1,9 @@
 package core.ast;
 
+import Utils.IntelliJDeodorantBundle;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.*;
 import com.intellij.util.SmartList;
-import Utils.IntelliJDeodorantBundle;
 import core.ast.decomposition.MethodBodyObject;
 import core.distance.ProjectInfo;
 
@@ -30,7 +30,7 @@ public class ASTReader {
         indicator.setFraction(1.0);
     }
 
-    public ASTReader(ProjectInfo project, PsiClass psiClass){
+    public ASTReader(ProjectInfo project, PsiClass psiClass) {
         systemObject = new SystemObject();
         examinedProject = project;
         systemObject.addClass(processTypeDeclaration(psiClass));

@@ -1,18 +1,8 @@
 package core.ast;
 
-import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.source.javadoc.PsiDocMethodOrFieldRef;
-import com.intellij.psi.javadoc.PsiDocComment;
-import com.intellij.psi.javadoc.PsiDocTag;
-import core.ast.util.ExpressionExtractor;
-import core.ast.util.MethodDeclarationUtility;
-import core.ast.util.StatementExtractor;
 
-
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class SystemObject {
     private static final String TYPE_STATE_CHECKING_INDICATOR_KEY = "type.state.checking.identification.indicator";

@@ -1,14 +1,15 @@
 package Components;
 
 import UI.SettingsUIDialog;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.ProjectComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import java.io.Serializable;
-import java.util.ArrayList;
 
-import Utils.CSVReadingManager;
+import java.io.Serializable;
 
 
 @State(
@@ -23,7 +24,7 @@ public class IODSettingsScreen implements Serializable, ProjectComponent,
     public void openComponent() {
         SettingsUIDialog dialog = new SettingsUIDialog("Refactoring IOD code smell");
         dialog.pack();
-        dialog.setSize(600,200);
+        dialog.setSize(600, 200);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
     }

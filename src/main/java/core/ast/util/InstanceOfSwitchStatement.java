@@ -5,8 +5,8 @@ import com.intellij.psi.PsiSwitchStatement;
 
 public class InstanceOfSwitchStatement implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiSwitchStatement;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiSwitchStatement;
+    }
 
 }

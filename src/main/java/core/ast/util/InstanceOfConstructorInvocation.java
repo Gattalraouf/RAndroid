@@ -5,8 +5,8 @@ import com.intellij.psi.PsiStatement;
 
 public class InstanceOfConstructorInvocation implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiConstructorCall;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiConstructorCall;
+    }
 
 }

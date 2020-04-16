@@ -5,8 +5,8 @@ import com.intellij.psi.PsiLiteralExpression;
 
 public class InstanceOfLiteral implements ExpressionInstanceChecker {
 
-	public boolean instanceOf(PsiExpression expression) {
-		return expression instanceof PsiLiteralExpression;
-	}
+    public boolean instanceOf(PsiExpression expression) {
+        return expression instanceof PsiLiteralExpression;
+    }
 
 }

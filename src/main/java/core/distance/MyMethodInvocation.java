@@ -46,9 +46,9 @@ public class MyMethodInvocation {
 
         if (o instanceof MyMethodInvocation) {
             MyMethodInvocation invocation = (MyMethodInvocation) o;
-            return this.classOrigin.equals(invocation.classOrigin) 
-                    && this.methodName.equals(invocation.methodName) 
-                    && this.returnType.equals(invocation.returnType) 
+            return this.classOrigin.equals(invocation.classOrigin)
+                    && this.methodName.equals(invocation.methodName)
+                    && this.returnType.equals(invocation.returnType)
                     && this.parameterList.equals(invocation.parameterList);
         }
         return false;

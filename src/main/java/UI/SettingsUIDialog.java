@@ -2,14 +2,11 @@ package UI;
 
 import Actions.RefactorIOD;
 import Utils.CSVReadingManager;
-import Utils.IntelliJDeodorantBundle;
 import Utils.JDeodorantFacade;
 import com.google.common.collect.Iterables;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.TransactionGuard;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.Task;
 import com.intellij.psi.*;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -17,7 +14,8 @@ import com.intellij.refactoring.HelpID;
 import com.intellij.refactoring.extractMethod.ExtractMethodHandler;
 import com.intellij.refactoring.extractMethod.PrepareFailedException;
 import com.intellij.util.SmartList;
-import core.ast.*;
+import core.ast.ASTReader;
+import core.ast.ClassObject;
 import core.ast.decomposition.cfg.ASTSlice;
 import core.ast.decomposition.cfg.ASTSliceGroup;
 import core.ast.decomposition.cfg.PDGNode;
@@ -25,7 +23,6 @@ import core.distance.ProjectInfo;
 import ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
 import ide.refactoring.extractMethod.MyExtractMethodProcessor;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -33,8 +30,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.event.*;
 import java.util.*;
 
-import static Utils.JDeodorantFacade.getExtractMethodRefactoringOpportunities;
-import static Utils.PsiUtils.*;
+import static Utils.PsiUtils.isChild;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -57,6 +53,7 @@ public class SettingsUIDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
+        buttonOK.setEnabled(false);
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
@@ -75,6 +72,23 @@ public class SettingsUIDialog extends JDialog {
             }
         });
 
+        SelectedPath.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent keyEvent) {
+
+            }
+
+            @Override
+            public void keyPressed(KeyEvent keyEvent) {
+
+            }
+
+            @Override
+            public void keyReleased(KeyEvent keyEvent) {
+                if (!SelectedPath.getText().equals("")) buttonOK.setEnabled(true);
+                else buttonOK.setEnabled(false);
+            }
+        });
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -113,55 +127,68 @@ public class SettingsUIDialog extends JDialog {
 
     private void onRefactor(String filePath) {
         ArrayList<String[]> file;
-        ArrayList<PsiFile> TargetClasses = new ArrayList<>();
         file = CSVReadingManager.ReadFile(filePath);
-        PsiClass innerClass = null;
-        Set<ASTSliceGroup> candidates = new HashSet<>();
-        PsiMethod[] methods = null;
+        PsiClass innerClass;
+        Set<ASTSliceGroup> candidates;
+        PsiMethod[] methods;
         ClassObject c;
-        MethodObject m;
         ASTReader astReader;
 
         for (String[] target : Iterables.skip(file, 1)) {
-            String[] targetDetails = target[1].split("#", 0);
-            String[] InnerClass = targetDetails[1].split("\\$", 0);
-            String[] targetClass = InnerClass[0].split("\\.", 0);
-            PsiFile[] targetClassFile = FilenameIndex.getFilesByName(RefactorIOD.myProject, targetClass[targetClass.length - 1] + ".java", GlobalSearchScope.allScope(RefactorIOD.myProject));
-            System.out.println(targetClassFile[0]);
-            PsiJavaFile psiJavaFile = (PsiJavaFile) targetClassFile[0];
-            PsiClass[] classes = psiJavaFile.getClasses();
-            System.out.println(classes[0]);
-            if (InnerClass.length == 2)
-                innerClass = classes[0].findInnerClassByName(InnerClass[1], false);
-            System.out.println(innerClass.getName());
-            methods = innerClass.findMethodsByName(targetDetails[0], false);
-            System.out.println(methods[0].getName());
+            candidates = new HashSet<>();
+            innerClass = getTargetClass(target);
+            methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(RefactorIOD.myProject), innerClass);
-            c = astReader.getSystemObject().getClassObject(InnerClass[0] + "." + innerClass.getName());
+            c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
+            //Handle long Method case
             JDeodorantFacade.processMethod(candidates, c, c.getMethodByName(methods[0].getName()));
-            System.out.println(candidates);
-            final List<ExtractMethodCandidateGroup> extractMethodCandidateGroups = candidates.stream().filter(Objects::nonNull)
-                    .map(sliceGroup ->
-                            sliceGroup.getCandidates().stream()
-                                    .filter(ca -> canBeExtracted(ca))
-                                    .collect(toSet()))
-                    .filter(set -> !set.isEmpty())
-                    .map(ExtractMethodCandidateGroup::new)
-                    .collect(toList());
-            if (extractMethodCandidateGroups.size() == 0) {
+            extractMethod(candidates);
+            candidates = new HashSet<>();
 
-            }
-            TargetClasses.add(targetClassFile[0]);
+            //Handle object creation
+            JDeodorantFacade.processMethodForInstances(candidates, c, c.getMethodByName(methods[0].getName()));
+            extractMethod(candidates);
+
         }
 
-        /*TreePath selectedPath = treeTable.getTree().getSelectionModel().getSelectionPath();
-        if (selectedPath != null) {
-            Object o = selectedPath.getLastPathComponent();
-            if (o instanceof ASTSlice) {
-                TransactionGuard.getInstance().submitTransactionAndWait(doExtract((ASTSlice) o));
-            }
-        }*/
+    }
 
+    private PsiClass getTargetClass(String[] target) {
+        PsiClass innerClass;
+        String[] targetDetails = target[1].split("#", 0);
+        String[] InnerClass = targetDetails[1].split("\\$", 0);
+        String[] targetClass = InnerClass[0].split("\\.", 0);
+        PsiFile[] targetClassFile = FilenameIndex.getFilesByName(RefactorIOD.myProject, targetClass[targetClass.length - 1] + ".java", GlobalSearchScope.allScope(RefactorIOD.myProject));
+        PsiJavaFile psiJavaFile = (PsiJavaFile) targetClassFile[0];
+        PsiClass[] classes = psiJavaFile.getClasses();
+
+        if (InnerClass.length == 2) {
+            innerClass = classes[0].findInnerClassByName(InnerClass[1], false);
+            return innerClass;
+        }
+
+        return classes[0];
+    }
+
+    private String getTargetMethodName(String[] target) {
+        String[] targetDetails = target[1].split("#", 0);
+
+        return targetDetails[0];
+    }
+
+    private void extractMethod(Set<ASTSliceGroup> candidates) {
+        final List<ExtractMethodCandidateGroup> extractMethodCandidateGroups = candidates.stream().filter(Objects::nonNull)
+                .map(sliceGroup ->
+                        sliceGroup.getCandidates().stream()
+                                .filter(ca -> canBeExtracted(ca))
+                                .collect(toSet()))
+                .filter(set -> !set.isEmpty())
+                .map(ExtractMethodCandidateGroup::new)
+                .collect(toList());
+        if (extractMethodCandidateGroups.size() != 0) {
+            for (ASTSlice slice : extractMethodCandidateGroups.get(0).getCandidates())
+                TransactionGuard.getInstance().submitTransactionAndWait(doExtract(slice));
+        }
     }
 
 
@@ -228,37 +255,6 @@ public class SettingsUIDialog extends JDialog {
         dispose();
     }
 
-/*
-    private void calculateRefactorings() {
-
-        final Task.Backgroundable backgroundable = new Task.Backgroundable(RefactorIOD.myProject,
-                IntelliJDeodorantBundle.message("long.method.detect.indicator.status"), true) {
-            @Override
-            public void run(@NotNull ProgressIndicator indicator) {
-                ApplicationManager.getApplication().runReadAction(() -> {
-                    Set<ASTSliceGroup> candidates = getExtractMethodRefactoringOpportunities(projectInfo, indicator);
-                    final List<ExtractMethodCandidateGroup> extractMethodCandidateGroups = candidates.stream().filter(Objects::nonNull)
-                            .map(sliceGroup ->
-                                    sliceGroup.getCandidates().stream()
-                                            .filter(c -> canBeExtracted(c))
-                                            .collect(toSet()))
-                            .filter(set -> !set.isEmpty())
-                            .map(ExtractMethodCandidateGroup::new)
-                            .collect(toList());
-
-                    IntelliJDeodorantCounterCollector.getInstance().refactoringFound(RefactorIOD.myProject, "extract.method", extractMethodCandidateGroups.size());
-                });
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-        };
-        runAfterCompilationCheck(backgroundable, scope.getProject(), projectInfo);
-    }
-    */
-
     /**
      * Checks that the slice can be extracted into a separate method without compilation errors.
      */
@@ -266,8 +262,7 @@ public class SettingsUIDialog extends JDialog {
         SmartList<PsiStatement> statementsToExtract = getStatementsToExtract(slice);
 
         MyExtractMethodProcessor processor = new MyExtractMethodProcessor(RefactorIOD.myProject,
-                null, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(),
-                IntelliJDeodorantBundle.message("extract.method.refactoring.name"), "", HelpID.EXTRACT_METHOD,
+                null, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(), "Refactoring", "", HelpID.EXTRACT_METHOD,
                 slice.getSourceTypeDeclaration(), slice.getLocalVariableCriterion());
 
         processor.setOutputVariable();

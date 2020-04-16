@@ -5,8 +5,8 @@ import com.intellij.psi.PsiStatement;
 
 public class InstanceOfVariableDeclarationExpression implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiDeclarationStatement;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiDeclarationStatement;
+    }
 
 }

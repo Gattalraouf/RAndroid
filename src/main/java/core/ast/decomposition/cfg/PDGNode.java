@@ -2,7 +2,10 @@ package core.ast.decomposition.cfg;
 
 import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.java.PsiReferenceExpressionImpl;
-import core.ast.*;
+import core.ast.ClassInstanceCreationObject;
+import core.ast.CreationObject;
+import core.ast.FieldObject;
+import core.ast.VariableDeclarationObject;
 import core.ast.decomposition.AbstractStatement;
 import core.ast.util.ExpressionExtractor;
 

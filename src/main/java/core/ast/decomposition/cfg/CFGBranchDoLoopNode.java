@@ -13,7 +13,7 @@ public class CFGBranchDoLoopNode extends CFGBranchNode {
 
     public CFGNode getJoinNode() {
         Flow flow = getTrueControlFlow();
-        return (CFGNode)flow.dst;
+        return (CFGNode) flow.dst;
     }
 
     public List<BasicBlock> getNestedBasicBlocks() {
@@ -23,8 +23,8 @@ public class CFGBranchDoLoopNode extends CFGBranchNode {
         //join node is always before do-loop node
         blocksBetween.add(joinBlock);
         BasicBlock nextBlock = joinBlock;
-        if(!joinBlock.equals(srcBlock)) {
-            while(!nextBlock.getNextBasicBlock().equals(srcBlock)) {
+        if (!joinBlock.equals(srcBlock)) {
+            while (!nextBlock.getNextBasicBlock().equals(srcBlock)) {
                 nextBlock = nextBlock.getNextBasicBlock();
                 blocksBetween.add(nextBlock);
             }

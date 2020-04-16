@@ -5,8 +5,8 @@ import com.intellij.psi.PsiExpression;
 
 public class InstanceOfAssignment implements ExpressionInstanceChecker {
 
-	public boolean instanceOf(PsiExpression expression) {
-		return expression instanceof PsiAssignmentExpression;
-	}
+    public boolean instanceOf(PsiExpression expression) {
+        return expression instanceof PsiAssignmentExpression;
+    }
 
 }

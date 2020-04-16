@@ -5,8 +5,8 @@ import com.intellij.psi.PsiStatement;
 
 public class InstanceOfBreakStatement implements StatementInstanceChecker {
 
-	public boolean instanceOf(PsiStatement statement) {
-		return statement instanceof PsiBreakStatement;
-	}
+    public boolean instanceOf(PsiStatement statement) {
+        return statement instanceof PsiBreakStatement;
+    }
 
 }

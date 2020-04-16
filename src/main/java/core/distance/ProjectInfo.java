@@ -1,11 +1,11 @@
 package core.distance;
 
+import Utils.PsiUtils;
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.*;
 import org.jetbrains.annotations.NotNull;
-import Utils.PsiUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;

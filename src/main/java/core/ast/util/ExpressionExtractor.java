@@ -437,7 +437,7 @@ public class ExpressionExtractor {
             }
             if (classInstanceCreation.isArrayCreation()) {
                 PsiExpression[] arrayDimensions = classInstanceCreation.getArrayDimensions();
-                for (PsiExpression arrayDimension: arrayDimensions) {
+                for (PsiExpression arrayDimension : arrayDimensions) {
                     expressionList.addAll(getExpressions(arrayDimension));
                 }
             }

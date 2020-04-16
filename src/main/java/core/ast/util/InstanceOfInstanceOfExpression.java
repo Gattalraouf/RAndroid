@@ -4,10 +4,10 @@ import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiInstanceOfExpression;
 
 public class InstanceOfInstanceOfExpression implements
-		ExpressionInstanceChecker {
+        ExpressionInstanceChecker {
 
-	public boolean instanceOf(PsiExpression expression) {
-		return expression instanceof PsiInstanceOfExpression;
-	}
+    public boolean instanceOf(PsiExpression expression) {
+        return expression instanceof PsiInstanceOfExpression;
+    }
 
 }
