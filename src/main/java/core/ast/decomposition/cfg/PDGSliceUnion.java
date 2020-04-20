@@ -505,7 +505,7 @@ public class PDGSliceUnion {
         return !sliceEqualsMethodBody() && !sliceContainsOnlyOneNodeCriterionAndDeclarationOfVariableCriterion() &&
                 !declarationOfVariableCriterionIsDuplicated() &&
                 !variableCriterionIsReturnedVariableInOriginalMethod() && (sliceNodes.size() >= nodeCriteria.size()) &&
-                !allNodeCriteriaAreDuplicated() && !returnStatementIsControlDependentOnSliceNode() && !sliceContainsReturnStatement() &&
+                !returnStatementIsControlDependentOnSliceNode() && !sliceContainsReturnStatement() &&
                 !containsDuplicateNodeWithStateChangingMethodInvocation() &&
                 !nonDuplicatedSliceNodeAntiDependsOnNonRemovableNode() &&
                 !nonDuplicatedSliceNodeOutputDependsOnNonRemovableNode() &&

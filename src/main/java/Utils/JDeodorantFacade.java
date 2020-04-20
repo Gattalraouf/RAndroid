@@ -139,7 +139,9 @@ public class JDeodorantFacade {
                     element = element.getParent();
                 }
                 if (element != null && !instancesElem.contains(element)) {
-                    instancesElem.add(element);
+                    if(element.getNode().getElementType().toString().equals("LOCAL_VARIABLE"))
+                        instancesElem.add(element.getParent());
+                    else instancesElem.add(element);
                 }
 
             }
@@ -147,8 +149,6 @@ public class JDeodorantFacade {
             for (PsiElement declaration : instancesElem) {
                 //PlainVariable variable = new PlainVariable(declaration);
                 StatementExtractor ext = new StatementExtractor();
-                List<PsiStatement> test = ext.getVariableDeclarationStatements(declaration);
-                classObject.getPsiClass().getReferences();
                 PDGSliceUnionCollection sliceUnionCollection = new PDGSliceUnionCollection(pdg, declaration, new PlainVariable(methodObject.getParameter(0).getSingleVariableDeclaration()));
                 double sumOfExtractedStatementsInGroup = 0.0;
                 double sumOfDuplicatedStatementsInGroup = 0.0;

@@ -19,6 +19,7 @@ import core.ast.ClassObject;
 import core.ast.decomposition.cfg.ASTSlice;
 import core.ast.decomposition.cfg.ASTSliceGroup;
 import core.ast.decomposition.cfg.PDGNode;
+import core.ast.decomposition.cfg.PDGSliceUnion;
 import core.distance.ProjectInfo;
 import ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
@@ -69,6 +70,9 @@ public class SettingsUIDialog extends JDialog {
         buttonLoadFile.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 SelectedPath.setText(onFileChoose());
+                if (!SelectedPath.getText().equals("")) {
+                    buttonOK.setEnabled(true);
+                } else buttonOK.setEnabled(false);
             }
         });
 
@@ -180,14 +184,13 @@ public class SettingsUIDialog extends JDialog {
         final List<ExtractMethodCandidateGroup> extractMethodCandidateGroups = candidates.stream().filter(Objects::nonNull)
                 .map(sliceGroup ->
                         sliceGroup.getCandidates().stream()
-                                .filter(ca -> canBeExtracted(ca))
+                                .filter(c -> canBeExtracted(c))
                                 .collect(toSet()))
                 .filter(set -> !set.isEmpty())
                 .map(ExtractMethodCandidateGroup::new)
                 .collect(toList());
         if (extractMethodCandidateGroups.size() != 0) {
-            for (ASTSlice slice : extractMethodCandidateGroups.get(0).getCandidates())
-                TransactionGuard.getInstance().submitTransactionAndWait(doExtract(slice));
+            TransactionGuard.getInstance().submitTransactionAndWait(doExtract(extractMethodCandidateGroups.get(0).getCandidates().stream().findAny().get()));
         }
     }
 
