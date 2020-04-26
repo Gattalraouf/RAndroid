@@ -22,8 +22,12 @@
                text="_RAndroid"
                description="RAndroid toolbar menu">
             <add-to-group group-id="MainMenu" anchor="last"/>
-            <action id="UIO"
+            <action id="IOD"
                     class="Actions.RefactorIOD"
+                    text="_Refactor IOD"
+                    description="Refactoring IOD Code smell"/>
+            <action id="UIO"
+                    class="Actions.RefactorUIO"
                     text="_Refactor UIO"
                     description="Refactoring UIO Code smell"/>
         </group>
