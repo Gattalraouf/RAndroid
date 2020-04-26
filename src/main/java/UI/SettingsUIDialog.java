@@ -1,12 +1,15 @@
 package UI;
 
 import Actions.RefactorIOD;
+import Actions.RefactorUIO;
 import Utils.CSVReadingManager;
 import Utils.JDeodorantFacade;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.application.TransactionGuard;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -16,10 +19,13 @@ import com.intellij.refactoring.extractMethod.PrepareFailedException;
 import com.intellij.util.SmartList;
 import core.ast.ASTReader;
 import core.ast.ClassObject;
+import core.ast.MethodInvocationObject;
+import core.ast.MethodObject;
+import core.ast.decomposition.MethodBodyObject;
 import core.ast.decomposition.cfg.ASTSlice;
 import core.ast.decomposition.cfg.ASTSliceGroup;
 import core.ast.decomposition.cfg.PDGNode;
-import core.ast.decomposition.cfg.PDGSliceUnion;
+import core.ast.decomposition.cfg.PlainVariable;
 import core.distance.ProjectInfo;
 import ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
@@ -43,6 +49,7 @@ public class SettingsUIDialog extends JDialog {
     private JButton buttonLoadFile;
     private JLabel Title;
     public String filePath = "";
+    private Project myProject;
 
     public SettingsUIDialog(String title) {
         Title.setText(title);
@@ -125,11 +132,137 @@ public class SettingsUIDialog extends JDialog {
     private void onOK() {
         // add your code here
         filePath = SelectedPath.getText();
-        onRefactor(filePath);
+        if (Title.getText().contains("IOD")) {
+            this.myProject = RefactorIOD.myProject;
+            onRefactorIOD(filePath);
+        } else if (Title.getText().contains("UIO")) {
+            this.myProject = RefactorUIO.myProject;
+            onRefactorUIO(filePath);
+        }
         dispose();
     }
 
-    private void onRefactor(String filePath) {
+    private void onCancel() {
+        // add your code here if necessary
+        filePath = "";
+        dispose();
+    }
+
+    private void onRefactorUIO(String filePath) {
+        ArrayList<String[]> file;
+        file = CSVReadingManager.ReadFile(filePath);
+        PsiClass innerClass;
+        Set<ASTSliceGroup> candidates;
+        PsiMethod[] methods;
+        ClassObject c;
+        MethodObject method;
+        ASTReader astReader;
+
+        for (String[] target : Iterables.skip(file, 1)) {
+            innerClass = getTargetClass(target);
+            methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
+            astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
+            c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
+            method = c.getMethodByName(methods[0].getName());
+            clipRect(method, c);
+        }
+
+    }
+
+    private void clipRect(MethodObject onDraw, ClassObject c) {
+        PsiJavaFile file = c.getPsiFile();
+        int NRectDraw = 0, NClipRect = 0, Ntranslation = 0, NRotation = 0, NDrawPath = 0, NclipPath = 0;
+
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
+        MethodBodyObject body = onDraw.getMethodBody();
+        Set<MethodInvocationObject> canvasInvokes = body.getInvokedMethodsThroughParameters().get(new PlainVariable(onDraw.getParameter(0).getVariableDeclaration()));
+        for (MethodInvocationObject invocationObject : canvasInvokes) {
+            if (invocationObject.getMethodName().equals("drawPath")) {
+                NDrawPath++;
+                if (NDrawPath != NclipPath)
+                    WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+                        @Override
+                        public void run() {
+                            PsiStatement statement = factory.createStatementFromText(
+                                    "canvas.clipPath(" + invocationObject.getMethodInvocation().getArgumentList()
+                                            .getExpressions()[0].getText() + ");", file);
+                            file.addBefore(statement, invocationObject.getMethodInvocation().getParent());
+                        }
+                    });
+            } else if (!invocationObject.getMethodName().equals("drawColor") &&
+                    !invocationObject.getMethodName().equals("drawARGB") &&
+                    !invocationObject.getMethodName().equals("drawRGB") &&
+                    !invocationObject.getMethodName().contains("Text") &&
+                    !invocationObject.getMethodName().contains("Paint") &&
+                    invocationObject.getMethodName().contains("draw")) {
+
+                NRectDraw++;
+            } else if (invocationObject.getMethodName().contains("clipRect")) {
+                NClipRect++;
+            } else if (invocationObject.getMethodName().contains("clipPath")) {
+                NclipPath++;
+            } else if (invocationObject.getMethodName().equals("translate")) {
+                Ntranslation++;
+            } else if (invocationObject.getMethodName().equals("rotate")) {
+                NRotation++;
+            }
+        }
+
+        String clip = "//TODO change the parameters of the used " + NClipRect + "canvas.clipRect(...) to cover the " +
+                "visible drawings only on the screen.";
+
+        String rect = "//TODO use canvas.clipRect() or canvas.clipOutRect() taking in consideration the "
+                + NRectDraw + " RectF shapes you are drawing in order that you don't draw shapes over each other " +
+                "without clipping the hidden parts.";
+
+        String addit = "//You can visualize overdraw using color tinting on your device with the Debug GPU Overdraw " +
+                "tool https://developer.android.com/tools/performance/debug-gpu-overdraw/index.html.";
+
+        String translation = "//Pay Attention to " + Ntranslation + "x canvas.translate(...) and " + NRotation
+                + "x canvas.rotate(...) that are used in your code.";
+
+
+        if (NRotation != 0 || Ntranslation != 0) {
+            WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+                @Override
+                public void run() {
+                    PsiComment comment = factory.createCommentFromText(translation, file);
+                    file.addBefore(comment, onDraw.getMethodDeclaration().getFirstChild());
+                }
+            });
+        }
+
+        if (NRectDraw != 0 && NClipRect == 0) {
+            WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+                @Override
+                public void run() {
+                    PsiComment comment = factory.createCommentFromText(addit, file);
+                    file.addBefore(comment, onDraw.getMethodDeclaration().getFirstChild());
+                    comment = factory.createCommentFromText(rect, file);
+                    file.addBefore(comment, onDraw.getMethodDeclaration().getFirstChild());
+                }
+            });
+        } else if (NRectDraw != 0) {
+            WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+                @Override
+                public void run() {
+                    PsiComment comment = factory.createCommentFromText(addit, file);
+                    file.addBefore(comment, onDraw.getMethodDeclaration().getFirstChild());
+                    comment = factory.createCommentFromText(clip, file);
+                    file.addBefore(comment, onDraw.getMethodDeclaration().getFirstChild());
+                }
+            });
+        }
+
+        for (MethodInvocationObject method : onDraw.getMethodBody().getInvokedMethodsThroughThisReference()) {
+            if (method.getParameterList().contains("android.graphics.Canvas")) {
+                clipRect(c.getMethodByName(method.getMethodName()), c);
+            }
+        }
+
+    }
+
+    private void onRefactorIOD(String filePath) {
         ArrayList<String[]> file;
         file = CSVReadingManager.ReadFile(filePath);
         PsiClass innerClass;
@@ -142,7 +275,7 @@ public class SettingsUIDialog extends JDialog {
             candidates = new HashSet<>();
             innerClass = getTargetClass(target);
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
-            astReader = new ASTReader(new ProjectInfo(RefactorIOD.myProject), innerClass);
+            astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             //Handle long Method case
             JDeodorantFacade.processMethod(candidates, c, c.getMethodByName(methods[0].getName()));
@@ -162,7 +295,7 @@ public class SettingsUIDialog extends JDialog {
         String[] targetDetails = target[1].split("#", 0);
         String[] InnerClass = targetDetails[1].split("\\$", 0);
         String[] targetClass = InnerClass[0].split("\\.", 0);
-        PsiFile[] targetClassFile = FilenameIndex.getFilesByName(RefactorIOD.myProject, targetClass[targetClass.length - 1] + ".java", GlobalSearchScope.allScope(RefactorIOD.myProject));
+        PsiFile[] targetClassFile = FilenameIndex.getFilesByName(myProject, targetClass[targetClass.length - 1] + ".java", GlobalSearchScope.allScope(myProject));
         PsiJavaFile psiJavaFile = (PsiJavaFile) targetClassFile[0];
         PsiClass[] classes = psiJavaFile.getClasses();
 
@@ -194,6 +327,27 @@ public class SettingsUIDialog extends JDialog {
         }
     }
 
+    /**
+     * Checks that the slice can be extracted into a separate method without compilation errors.
+     */
+    private boolean canBeExtracted(ASTSlice slice) {
+        SmartList<PsiStatement> statementsToExtract = getStatementsToExtract(slice);
+
+        MyExtractMethodProcessor processor = new MyExtractMethodProcessor(myProject,
+                null, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(), "Refactoring", "", HelpID.EXTRACT_METHOD,
+                slice.getSourceTypeDeclaration(), slice.getLocalVariableCriterion());
+
+        processor.setOutputVariable();
+
+        try {
+            processor.setShowErrorDialogs(false);
+            return processor.prepare();
+
+        } catch (PrepareFailedException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     /**
      * Collects statements that can be extracted into a separate method.
@@ -215,7 +369,6 @@ public class SettingsUIDialog extends JDialog {
         }
         return statementsToExtract;
     }
-
 
     /**
      * Extracts statements into new method.
@@ -250,35 +403,5 @@ public class SettingsUIDialog extends JDialog {
             }
         };
     }
-
-
-    private void onCancel() {
-        // add your code here if necessary
-        filePath = "";
-        dispose();
-    }
-
-    /**
-     * Checks that the slice can be extracted into a separate method without compilation errors.
-     */
-    private boolean canBeExtracted(ASTSlice slice) {
-        SmartList<PsiStatement> statementsToExtract = getStatementsToExtract(slice);
-
-        MyExtractMethodProcessor processor = new MyExtractMethodProcessor(RefactorIOD.myProject,
-                null, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(), "Refactoring", "", HelpID.EXTRACT_METHOD,
-                slice.getSourceTypeDeclaration(), slice.getLocalVariableCriterion());
-
-        processor.setOutputVariable();
-
-        try {
-            processor.setShowErrorDialogs(false);
-            return processor.prepare();
-
-        } catch (PrepareFailedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
 
 }
