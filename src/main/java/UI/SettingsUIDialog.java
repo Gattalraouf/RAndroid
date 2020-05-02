@@ -1,5 +1,6 @@
 package UI;
 
+import Actions.RefactorHSS;
 import Actions.RefactorIOD;
 import Actions.RefactorUIO;
 import Utils.CSVReadingManager;
@@ -138,14 +139,37 @@ public class SettingsUIDialog extends JDialog {
         } else if (Title.getText().contains("UIO")) {
             this.myProject = RefactorUIO.myProject;
             onRefactorUIO(filePath);
+        } else if (Title.getText().contains("HSS")) {
+            this.myProject = RefactorHSS.myProject;
+            onRefactorHSS(filePath);
         }
         dispose();
     }
+
+
 
     private void onCancel() {
         // add your code here if necessary
         filePath = "";
         dispose();
+    }
+
+    private void onRefactorHSS(String filePath) {
+        ArrayList<String[]> file;
+        file = CSVReadingManager.ReadFile(filePath);
+        PsiClass innerClass;
+        Set<ASTSliceGroup> candidates;
+        PsiMethod[] methods;
+        ClassObject c;
+        MethodObject method;
+        ASTReader astReader;
+
+        for (String[] target : Iterables.skip(file, 1)) {
+            innerClass = getTargetClass(target);
+            methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
+            astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
+            c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
+        }
     }
 
     private void onRefactorUIO(String filePath) {
