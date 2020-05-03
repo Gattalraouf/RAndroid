@@ -26,6 +26,10 @@
                     class="Actions.RefactorIOD"
                     text="_Refactor IOD"
                     description="Refactoring IOD Code smell"/>
+            <action id="RAM"
+                    class="Actions.RefactorRAM"
+                    text="_Refactor RAM"
+                    description="Refactoring RAM Code smell"/>
             <action id="UIO"
                     class="Actions.RefactorUIO"
                     text="_Refactor UIO"
