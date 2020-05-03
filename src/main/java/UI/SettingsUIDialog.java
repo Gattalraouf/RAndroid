@@ -1,6 +1,7 @@
 package UI;
 
 import Actions.RefactorIOD;
+import Actions.RefactorRAM;
 import Actions.RefactorUIO;
 import Utils.CSVReadingManager;
 import Utils.JDeodorantFacade;
@@ -22,10 +23,7 @@ import core.ast.ClassObject;
 import core.ast.MethodInvocationObject;
 import core.ast.MethodObject;
 import core.ast.decomposition.MethodBodyObject;
-import core.ast.decomposition.cfg.ASTSlice;
-import core.ast.decomposition.cfg.ASTSliceGroup;
-import core.ast.decomposition.cfg.PDGNode;
-import core.ast.decomposition.cfg.PlainVariable;
+import core.ast.decomposition.cfg.*;
 import core.distance.ProjectInfo;
 import ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
@@ -138,6 +136,9 @@ public class SettingsUIDialog extends JDialog {
         } else if (Title.getText().contains("UIO")) {
             this.myProject = RefactorUIO.myProject;
             onRefactorUIO(filePath);
+        } else if (Title.getText().contains("RAM")) {
+            this.myProject = RefactorRAM.myProject;
+            onRefactorRAM(filePath);
         }
         dispose();
     }
@@ -146,6 +147,70 @@ public class SettingsUIDialog extends JDialog {
         // add your code here if necessary
         filePath = "";
         dispose();
+    }
+
+    private void onRefactorRAM(String filePath) {
+
+        ArrayList<ClassObject> ramClasses;
+        ramClasses = getaDoctorTargetClass(filePath);
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
+
+        for (ClassObject ramClass : ramClasses) {
+            PsiJavaFile file = ramClass.getPsiFile();
+            for (MethodObject method : ramClass.getMethodList()) {
+                for (Map.Entry<AbstractVariable, LinkedHashSet<MethodInvocationObject>> usedVariable : method.getMethodBody().getInvokedMethodsThroughLocalVariables().entrySet()) {
+                    if (usedVariable.getKey().getType().equals("android.app.AlarmManager")) {
+                        for (MethodInvocationObject invok : usedVariable.getValue()) {
+                            if (invok.getMethodName().equals("setRepeating")) {
+                                WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        PsiExpression[] list = invok.getMethodInvocation().getArgumentList().getExpressions();
+                                        PsiStatement callExpression = factory.createStatementFromText(
+                                                usedVariable.getKey().getName() + ".setInexactRepeating ( " +
+                                                        list[0].getText() + " , " + list[1].getText() + " , " + list[2].getText()
+                                                        + " , " + list[3].getText() + " );", invok.getMethodInvocation());
+                                        invok.getMethodInvocation().replace(callExpression);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private ArrayList<ClassObject> getaDoctorTargetClass(String filePath) {
+        ArrayList<String[]> file;
+        ASTReader astReader;
+        ArrayList<ClassObject> classes = new ArrayList<>();
+        PsiClass ramClass;
+        ClassObject c;
+
+        file = CSVReadingManager.ReadFile(filePath);
+        int i = -1;
+        for (String[] target : file) {
+            if (i == -1) {
+                i = 0;
+                for (String ram : target) {
+                    if (ram.equals("RAM")) {
+                        break;
+                    }
+                    i++;
+                }
+            } else {
+                if (target[i].equals("1")) {
+                    ramClass = JavaPsiFacade.getInstance(myProject).findClass(target[0], GlobalSearchScope.allScope(myProject));
+                    astReader = new ASTReader(new ProjectInfo(myProject), ramClass);
+                    c = astReader.getSystemObject().getClassObject(ramClass.getQualifiedName());
+                    classes.add(c);
+                }
+            }
+        }
+
+        return classes;
     }
 
     private void onRefactorUIO(String filePath) {
@@ -159,7 +224,7 @@ public class SettingsUIDialog extends JDialog {
         ASTReader astReader;
 
         for (String[] target : Iterables.skip(file, 1)) {
-            innerClass = getTargetClass(target);
+            innerClass = getPaprikaTargetClass(target);
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
@@ -273,7 +338,7 @@ public class SettingsUIDialog extends JDialog {
 
         for (String[] target : Iterables.skip(file, 1)) {
             candidates = new HashSet<>();
-            innerClass = getTargetClass(target);
+            innerClass = getPaprikaTargetClass(target);
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
@@ -290,7 +355,7 @@ public class SettingsUIDialog extends JDialog {
 
     }
 
-    private PsiClass getTargetClass(String[] target) {
+    private PsiClass getPaprikaTargetClass(String[] target) {
         PsiClass innerClass;
         String[] targetDetails = target[1].split("#", 0);
         String[] InnerClass = targetDetails[1].split("\\$", 0);
