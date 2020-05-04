@@ -163,7 +163,7 @@ public class SettingsUIDialog extends JDialog {
         MethodObject method;
         ASTReader astReader;
 
-        for (String[] target : Iterables.skip(file, 1)) {
+        for (String[] target : Iterables.skip(file, 3)) {
             innerClass = getPaprikaTargetClass(target);
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);

@@ -29,7 +29,7 @@ intellij {
     intellij.updateSinceUntilBuild false
     // Require the Android plugin, Gradle will match the plugin version to intellij.version
     plugins 'java'
-    alternativeIdePath '/snap/android-studio/88/android-studio/'
+    alternativeIdePath '/Applications/Android Studio.app/Contents/ '
 }
 
 patchPluginXml {
