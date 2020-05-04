@@ -169,8 +169,66 @@ public class SettingsUIDialog extends JDialog {
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
+            method = c.getMethodByName(methods[0].getName());
+            RunServiceOnBackground(method,c);
         }
     }
+
+    private void RunServiceOnBackground(MethodObject onStartCommand, ClassObject c) {
+        PsiElementFactory elementFactory=PsiElementFactory.getInstance(myProject);
+        PsiJavaFile psiFile = c.getPsiFile();
+
+        WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+            @Override
+            public void run() {
+
+                PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
+                PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
+
+                //Thread thread = new Thread(){
+                PsiTypeElement type=elementFactory.createTypeElementFromText("Thread",psiFile);
+                PsiElement elem= psiFile.addBefore(type, onStartCommand.getMethodDeclaration().getBody().getFirstBodyElement());
+                PsiStatement stat=elementFactory.createStatementFromText("thread = new Thread(){",psiFile);
+                elem= psiFile.addAfter(stat, elem);
+
+                //@Ovveride public void run() {
+                PsiAnnotation annotation=elementFactory.createAnnotationFromText("@Override",psiFile);
+                stat=elementFactory.createStatementFromText("public",psiFile);
+                annotation.addAfter(stat,psiFile);
+                type=elementFactory.createTypeElementFromText("void",psiFile);
+                annotation.addAfter(type,psiFile);
+                stat=elementFactory.createStatementFromText("run()",psiFile);
+                annotation.addAfter(stat,psiFile);
+                annotation.addAfter(LBrace,psiFile);
+                psiFile.addAfter(annotation,elem);
+
+                //try{stopSelf();}
+                stat=elementFactory.createStatementFromText("try {stopSelf();}",psiFile);
+                elem =psiFile.addBefore(stat,onStartCommand.getMethodDeclaration().getBody().getLastBodyElement());
+
+                //catch(InterruptedException e){}
+                type=elementFactory.createTypeElementFromText("InterruptedException",psiFile);
+                stat=elementFactory.createStatementFromText("{}",psiFile);
+                PsiElement exception=elementFactory.createCatchSection(type.getType(),"e",stat);
+                elem=psiFile.addAfter(exception,elem);
+
+                //close the braces of the thread and run
+                elem=psiFile.addAfter(RBrace,elem);
+                elem=psiFile.addAfter(RBrace,elem);
+                stat=elementFactory.createStatementFromText(";",psiFile);
+                elem=psiFile.addAfter(stat,elem);
+
+                //thread.start();
+                stat=elementFactory.createStatementFromText("thread.start();",psiFile);
+                psiFile.addAfter(stat,elem);
+
+                System.out.println("HSSRefactoringFinished");
+            }
+        });
+
+    }
+
+
 
     private void onRefactorUIO(String filePath) {
         ArrayList<String[]> file;
