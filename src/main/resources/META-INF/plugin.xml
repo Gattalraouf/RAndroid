@@ -34,6 +34,10 @@
                     class="Actions.RefactorUIO"
                     text="_Refactor UIO"
                     description="Refactoring UIO Code smell"/>
+            <action id="HSS"
+                    class="Actions.RefactorHSS"
+                    text="_Refactor HSS"
+                    description="Refactoring HSS Code smell"/>
         </group>
     </actions>
 
