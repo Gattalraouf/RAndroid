@@ -163,7 +163,9 @@ public class SettingsUIDialog extends JDialog {
         MethodObject method;
         ASTReader astReader;
 
-        for (String[] target : Iterables.skip(file, 3)) {
+
+        for (String[] target : Iterables.skip(file, 1)) {
+            //System.out.println("the first element is "+target[0]);
             innerClass = getPaprikaTargetClass(target);
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
@@ -453,6 +455,9 @@ public class SettingsUIDialog extends JDialog {
     private PsiClass getPaprikaTargetClass(String[] target) {
         PsiClass innerClass;
         String[] targetDetails = target[1].split("#", 0);
+        if (Title.getText().contains("HSS")) {
+            targetDetails = target[3].split("#", 0);
+        }
         String[] InnerClass = targetDetails[1].split("\\$", 0);
         String[] targetClass = InnerClass[0].split("\\.", 0);
         PsiFile[] targetClassFile = FilenameIndex.getFilesByName(myProject, targetClass[targetClass.length - 1] + ".java", GlobalSearchScope.allScope(myProject));
@@ -469,7 +474,9 @@ public class SettingsUIDialog extends JDialog {
 
     private String getTargetMethodName(String[] target) {
         String[] targetDetails = target[1].split("#", 0);
-
+        if (Title.getText().contains("HSS")) {
+            targetDetails = target[3].split("#", 0);
+        }
         return targetDetails[0];
     }
 
