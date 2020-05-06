@@ -177,6 +177,8 @@ public class SettingsUIDialog extends JDialog {
         PsiElementFactory elementFactory=PsiElementFactory.getInstance(myProject);
         PsiJavaFile psiFile = c.getPsiFile();
 
+        System.out.println("leeet's start");
+
         WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
             @Override
             public void run() {
@@ -184,10 +186,23 @@ public class SettingsUIDialog extends JDialog {
                 PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
                 PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
 
-                //Thread thread = new Thread(){
-                PsiTypeElement type=elementFactory.createTypeElementFromText("Thread",psiFile);
+                //onStartCommand.getMethodDeclaration().getReturnTypeElement();
+
+                //HandlerThread thread = new HandlerThread("RunCode");
+                PsiTypeElement type=elementFactory.createTypeElementFromText("HandlerThread",psiFile);
                 PsiElement elem= psiFile.addBefore(type, onStartCommand.getMethodDeclaration().getBody().getFirstBodyElement());
-                PsiStatement stat=elementFactory.createStatementFromText("thread = new Thread(){",psiFile);
+                PsiStatement stat=elementFactory.createStatementFromText("thread = new HandlerThread(\"RunCode\");",psiFile);
+                elem= psiFile.addAfter(stat, elem);
+                elem= psiFile.addAfter(onStartCommand.getMethodDeclaration().getReturnTypeElement(), elem);
+
+                //thread.start();
+                stat=elementFactory.createStatementFromText("thread.start();",psiFile);
+                elem= psiFile.addAfter(stat,elem);
+
+                //Runnable tr = new Runnable(){
+                type=elementFactory.createTypeElementFromText("Runnable",psiFile);
+                elem= psiFile.addAfter(type,elem );
+                stat=elementFactory.createStatementFromText("r = new Runnable(){",psiFile);
                 elem= psiFile.addAfter(stat, elem);
 
                 //@Ovveride public void run() {
@@ -201,25 +216,37 @@ public class SettingsUIDialog extends JDialog {
                 annotation.addAfter(LBrace,psiFile);
                 psiFile.addAfter(annotation,elem);
 
-                //try{stopSelf();}
-                stat=elementFactory.createStatementFromText("try {stopSelf();}",psiFile);
-                elem =psiFile.addBefore(stat,onStartCommand.getMethodDeclaration().getBody().getLastBodyElement());
+//                //try{stopSelf();}
+//                stat=elementFactory.createStatementFromText("try {stopSelf();}",psiFile);
+//                elem =psiFile.addBefore(stat,onStartCommand.getMethodDeclaration().getBody().getLastBodyElement());
+//
+//                //catch(InterruptedException e){}
+//                type=elementFactory.createTypeElementFromText("InterruptedException",psiFile);
+//                stat=elementFactory.createStatementFromText("{}",psiFile);
+//                PsiElement exception=elementFactory.createCatchSection(type.getType(),"e",stat);
+//                elem=psiFile.addAfter(exception,elem);
 
-                //catch(InterruptedException e){}
-                type=elementFactory.createTypeElementFromText("InterruptedException",psiFile);
-                stat=elementFactory.createStatementFromText("{}",psiFile);
-                PsiElement exception=elementFactory.createCatchSection(type.getType(),"e",stat);
-                elem=psiFile.addAfter(exception,elem);
 
-                //close the braces of the thread and run
-                elem=psiFile.addAfter(RBrace,elem);
+                //close the braces of the Runnable and run
+                elem =psiFile.addBefore(RBrace,onStartCommand.getMethodDeclaration().getBody().getLastBodyElement());
                 elem=psiFile.addAfter(RBrace,elem);
                 stat=elementFactory.createStatementFromText(";",psiFile);
                 elem=psiFile.addAfter(stat,elem);
 
-                //thread.start();
-                stat=elementFactory.createStatementFromText("thread.start();",psiFile);
+                //Handler backgroundHandler = new Handler(thread.getLooper());
+                type=elementFactory.createTypeElementFromText("Handler",psiFile);
+                elem= psiFile.addAfter(type,elem );
+                stat=elementFactory.createStatementFromText("backgroundHandler = new Handler(thread.getLooper());",psiFile);
+                elem= psiFile.addAfter(stat, elem);
+
+                //backgroundHandler.post(r);
+                stat=elementFactory.createStatementFromText("backgroundHandler.post(r);",psiFile);
                 psiFile.addAfter(stat,elem);
+
+
+//                //thread.start();
+//                stat=elementFactory.createStatementFromText("thread.start();",psiFile);
+//                psiFile.addAfter(stat,elem);
 
                 System.out.println("HSSRefactoringFinished");
             }
