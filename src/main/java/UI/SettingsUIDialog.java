@@ -1,9 +1,6 @@
 package UI;
 
-import Actions.RefactorHSS;
-import Actions.RefactorIOD;
-import Actions.RefactorRAM;
-import Actions.RefactorUIO;
+import Actions.*;
 import Utils.CSVReadingManager;
 import Utils.JDeodorantFacade;
 import com.google.common.collect.Iterables;
@@ -19,22 +16,23 @@ import com.intellij.refactoring.HelpID;
 import com.intellij.refactoring.extractMethod.ExtractMethodHandler;
 import com.intellij.refactoring.extractMethod.PrepareFailedException;
 import com.intellij.util.SmartList;
-import core.ast.ASTReader;
-import core.ast.ClassObject;
-import core.ast.MethodInvocationObject;
-import core.ast.MethodObject;
+import com.sun.xml.internal.xsom.impl.scd.Iterators;
+import core.ast.*;
 import core.ast.decomposition.MethodBodyObject;
 import core.ast.decomposition.cfg.*;
+import core.ast.util.StatementExtractor;
 import core.distance.ProjectInfo;
 import ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
 import ide.refactoring.extractMethod.MyExtractMethodProcessor;
+import org.jf.util.SparseArray;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static Utils.PsiUtils.isChild;
 import static java.util.stream.Collectors.toList;
@@ -143,6 +141,9 @@ public class SettingsUIDialog extends JDialog {
         }else if (Title.getText().contains("HSS")) {
             this.myProject = RefactorHSS.myProject;
             onRefactorHSS(filePath);
+        }else if (Title.getText().contains("IDS")) {
+            this.myProject = RefactorIDS.myProject;
+            onRefactorIDS(filePath);
         }
         dispose();
     }
@@ -151,6 +152,203 @@ public class SettingsUIDialog extends JDialog {
         // add your code here if necessary
         filePath = "";
         dispose();
+    }
+
+    private void onRefactorIDS(String filePath) {
+        ArrayList<ClassObject> idsClasses;
+        idsClasses = getaDoctorTargetClass(filePath);
+
+        for (ClassObject idsClass : idsClasses) {
+            List<LocalVariableDeclarationObject> variableList;
+            ArrayList<PsiVariable> HachMapVariables = new ArrayList<>();
+            ArrayList<PsiTypeElement> HachMapReturns = new ArrayList<>();
+            ArrayList<PsiStatement> ForStatements = new ArrayList<>();
+            List<AnonymousClassDeclarationObject>  anonumousClasses;
+            List<MethodObject> anonymousMethods;
+
+            //get the class global fields
+            for (PsiField field:idsClass.getPsiClass().getFields()){
+                String fieldtype=field.getTypeElement().getType().getPresentableText();
+                if(!fieldtype.contains("LinkedHashMap")
+                        && !fieldtype.contains("ConcurrentHashMap")
+                        && (fieldtype.contains("HashMap<Long")
+                        ||fieldtype.contains("HashMap<Integer"))){
+                    HachMapVariables.add(field);
+                }
+            }
+
+            //get the local variables of each method
+            for (MethodObject method : idsClass.getMethodList()) {
+
+                //get the for statements to remove entryset()
+                for(PsiStatement s:method.getMethodDeclaration().getBody().getStatements()){
+                    if(s.getText().startsWith("for")){
+                        if(s.getText().contains("Map.Entry<Integer") && s.getText().contains(".entrySet()")){
+                            ForStatements.add(s);
+                        }
+                    }
+                }
+
+                 variableList =method.getLocalVariableDeclarations();
+                 String variableType="";
+                 for (int i =0; i < variableList.size(); i++){
+                     variableType=variableList.get(i).getVariableDeclaration().getTypeElement().getType().getPresentableText();
+                     if(!variableType.contains("LinkedHashMap")
+                             && !variableType.contains("ConcurrentHashMap")
+                             &&(variableType.contains("HashMap<Long")||variableType.contains("HashMap<Integer"))){
+                         HachMapVariables.add(variableList.get(i).getVariableDeclaration());
+                     }
+                 }
+
+                 //verify the return type of the method
+                String returnType=method.getMethodDeclaration().getReturnTypeElement().getType().getPresentableText();
+                if(!returnType.contains("LinkedHashMap")
+                        && !returnType.contains("ConcurrentHashMap")
+                        && (returnType.contains("HashMap<Long")
+                        ||returnType.contains("HashMap<Integer"))){
+
+                    HachMapReturns.add(method.getMethodDeclaration().getReturnTypeElement());
+                }
+
+                //verify the parameters of the method
+                for (PsiParameter param :method.getMethodDeclaration().getParameterList().getParameters()){
+                    String paramType= param.getTypeElement().getType().getPresentableText();
+                    if(!paramType.contains("LinkedHashMap")
+                            && !paramType.contains("ConcurrentHashMap")
+                            && (paramType.contains("HashMap<Long")
+                            ||paramType.contains("HashMap<Integer"))){
+
+                        HachMapVariables.add(param);
+
+                    }
+                }
+
+                //verify the fileds and the variables of the anonymous classes if their type is HashMap
+                 anonumousClasses=method.getAnonymousClassDeclarations();
+                for (int i =0; i < anonumousClasses.size(); i++){
+                    System.out.println("the class is"+anonumousClasses.get(i).getAnonymousClassDeclaration().getName());
+                    //Verify the fields of the anonymous class
+                    for (PsiField field:anonumousClasses.get(i).getAnonymousClassDeclaration().getFields()){
+                        String Ftype=field.getTypeElement().getType().getPresentableText();
+                        if(!Ftype.contains("LinkedHashMap")
+                                && !Ftype.contains("ConcurrentHashMap")
+                                && (Ftype.contains("HashMap<Long")
+                                ||Ftype.contains("HashMap<Integer"))){
+                            HachMapVariables.add(field);
+                        }
+                    }
+
+                    //verify the variables of each method of the anonymous class
+                    anonymousMethods=anonumousClasses.get(i).getMethodList();
+                    for (int j =0; j < anonymousMethods.size(); j++){
+                        variableList=anonymousMethods.get(j).getLocalVariableDeclarations();
+                        for (int k =0; k < variableList.size(); k++){
+                            variableType=variableList.get(k).getVariableDeclaration().getTypeElement().getType().getPresentableText();
+                            if(!variableType.contains("LinkedHashMap") && !variableType.contains("ConcurrentHashMap")){
+                                if (variableType.contains("HashMap<Long")||variableType.contains("HashMap<Integer")){
+                                    HachMapVariables.add(variableList.get(k).getVariableDeclaration());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            //remove duplications
+            Set<PsiVariable> set = new HashSet<>(HachMapVariables);
+            HachMapVariables.clear();
+            HachMapVariables.addAll(set);
+
+            HashMapToSparseArray(HachMapVariables,HachMapReturns,ForStatements,idsClass);
+        }
+    }
+
+    private void HashMapToSparseArray(ArrayList<PsiVariable> hachMapVariables, ArrayList<PsiTypeElement> hachMapReturns, ArrayList<PsiStatement> forStatements, ClassObject idsClass) {
+        PsiJavaFile file = idsClass.getPsiFile();
+        PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
+
+        WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
+            @Override
+            public void run() {
+                String[] elements;
+                PsiTypeElement newType;
+                PsiExpression newInitializer;
+
+                for (int i =0; i < hachMapReturns.size(); i++){
+                    //replace Hashmap<Long|Integer,X> by SparseArray<X>
+                    String type=hachMapReturns.get(i).getType().getPresentableText();
+//                    type.replaceAll("HashMap<Long,","SparseArray<");
+//                    type.replaceAll("HashMap<Integer,","SparseArray<");
+                    elements=type.split(",");
+                    type="SparseArray<".concat(elements[1]);
+                    newType = factory.createTypeElementFromText(type,file);
+                    hachMapReturns.get(i).replace(newType);
+                }
+
+                for (int i =0; i < hachMapVariables.size(); i++){
+
+                    System.out.println("the name of the variable is"+hachMapVariables.get(i).getName());
+
+                    //replace Hashmap<Long|Integer,X> by SparseArray<X>
+                    String type=hachMapVariables.get(i).getTypeElement().getType().getPresentableText();
+//                    type.replaceAll("HashMap<Long,","SparseArray<");
+//                    type.replaceAll("HashMap<Integer,","SparseArray<");
+                    elements=type.split(",");
+                    type="SparseArray<".concat(elements[1]);
+                    newType = factory.createTypeElementFromText(type,file);
+                    hachMapVariables.get(i).getTypeElement().replace(newType);
+
+                    if(hachMapVariables.get(i).getInitializer()!=null){
+                        // replace the initializer by new SparseArray<>()
+                        newInitializer=factory.createExpressionFromText("new SparseArray<>()",file);
+                        String initializerText =hachMapVariables.get(i).getInitializer().getText();
+                        if( !initializerText.contains("new LinkedHashMap")
+                                && !initializerText.contains("new ConcurrentHashMap")
+                                && (initializerText.contains("new HashMap<Long")
+                                ||initializerText.contains("new HashMap<Integer")
+                                ||initializerText.contains("new HashMap"))){
+
+                            hachMapVariables.get(i).getInitializer().replace(newInitializer);
+                        }
+
+                        //Verify if the initializer contains a cast to HashMap
+                        else if ( !initializerText.contains("LinkedHashMap")
+                                && !initializerText.contains("ConcurrentHashMap")
+                                && (initializerText.contains("(HashMap<Long")
+                                ||initializerText.contains("(HashMap<Integer")
+                                ||initializerText.contains("(HashMap"))){
+
+                            String[] parts = hachMapVariables.get(i).getInitializer().getText().split("\\)");
+                            String a =parts[0]+")";
+                            String newInitializerText = initializerText.replaceFirst(a,"SparseArray");
+                            PsiExpression newInitializer2=factory.createExpressionFromText(newInitializerText,file);
+                            hachMapVariables.get(i).getInitializer().replace(newInitializer2);
+                        }
+                    }
+                }
+
+                for (int i =0; i < forStatements.size(); i++){
+
+                    String forStatementText =forStatements.get(i).getText();
+
+                    String entity=forStatementText.split(">")[1].split(" ")[1];
+                    String entityType=forStatementText.split(",")[1].split(">")[0].replaceAll(" ","");
+                    String mapName=forStatementText.split(":")[1].split(".entrySet()")[0].replaceAll(" ","");
+
+                    String a ="for(int i = 0; i < "+mapName+".size(); i++)";
+                    String HeadFor="for(int i = 0; i < "+mapName+".size(); i++){ \n" +
+                            "            int key = "+mapName+".keyAt(i);\n" +
+                            "            "+entityType+" "+ entity +"=  "+mapName+".get(key);";
+
+                    String[] splitted =forStatementText.split("\\{");
+                    forStatementText=forStatementText.replace(splitted[0],HeadFor);
+                    forStatementText=forStatementText.replaceAll(entity+".getValue\\(\\)",entity);
+
+                    PsiStatement newStatement =factory.createStatementFromText(forStatementText,file);
+                    forStatements.get(i).replace(newStatement);
+                }
+
+            }});
     }
 
     private void onRefactorHSS(String filePath) {
@@ -165,13 +363,15 @@ public class SettingsUIDialog extends JDialog {
 
 
         for (String[] target : Iterables.skip(file, 1)) {
-            //System.out.println("the first element is "+target[0]);
             innerClass = getPaprikaTargetClass(target);
+            System.out.println("The initializer is "+innerClass.getFields()[0].getInitializer().getText());
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
+            System.out.println("The type of the local var is "+method.getLocalVariableDeclarations().get(1).getVariableDeclaration().getTypeElement().getType().getPresentableText());
             RunServiceOnBackground(method,c);
+
         }
     }
 
@@ -182,6 +382,15 @@ public class SettingsUIDialog extends JDialog {
         WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
             @Override
             public void run() {
+                PsiElement e= elementFactory.createStatementFromText("String2",psiFile);
+                String a ="HachMap<Long,Bitmap>";
+                String[] TypeSplitted = a.split(",");
+                a.concat("SparseArray<");
+
+                c.getPsiClass().getFields()[1].getInitializer().getText();
+
+                //c.getPsiClass().getFields()[1].getTypeElement().replace(e);
+
 
                 PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
                 PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
@@ -255,6 +464,7 @@ public class SettingsUIDialog extends JDialog {
         for (ClassObject ramClass : ramClasses) {
             PsiJavaFile file = ramClass.getPsiFile();
             for (MethodObject method : ramClass.getMethodList()) {
+
                 for (Map.Entry<AbstractVariable, LinkedHashSet<MethodInvocationObject>> usedVariable : method.getMethodBody().getInvokedMethodsThroughLocalVariables().entrySet()) {
                     if (usedVariable.getKey().getType().equals("android.app.AlarmManager")) {
                         for (MethodInvocationObject invok : usedVariable.getValue()) {
@@ -283,7 +493,7 @@ public class SettingsUIDialog extends JDialog {
         ArrayList<String[]> file;
         ASTReader astReader;
         ArrayList<ClassObject> classes = new ArrayList<>();
-        PsiClass ramClass;
+        PsiClass Class;
         ClassObject c;
 
         file = CSVReadingManager.ReadFile(filePath);
@@ -292,16 +502,20 @@ public class SettingsUIDialog extends JDialog {
             if (i == -1) {
                 i = 0;
                 for (String ram : target) {
-                    if (ram.equals("RAM")) {
+                    if (Title.getText().contains("IDS")) {
+                        if (ram.equals("IDS")) {
+                            break;
+                        }
+                    } else if (ram.equals("RAM")) {
                         break;
                     }
                     i++;
                 }
             } else {
                 if (target[i].equals("1")) {
-                    ramClass = JavaPsiFacade.getInstance(myProject).findClass(target[0], GlobalSearchScope.allScope(myProject));
-                    astReader = new ASTReader(new ProjectInfo(myProject), ramClass);
-                    c = astReader.getSystemObject().getClassObject(ramClass.getQualifiedName());
+                    Class = JavaPsiFacade.getInstance(myProject).findClass(target[0], GlobalSearchScope.allScope(myProject));
+                    astReader = new ASTReader(new ProjectInfo(myProject), Class);
+                    c = astReader.getSystemObject().getClassObject(Class.getQualifiedName());
                     classes.add(c);
                 }
             }
@@ -468,6 +682,7 @@ public class SettingsUIDialog extends JDialog {
             innerClass = classes[0].findInnerClassByName(InnerClass[1], false);
             return innerClass;
         }
+
 
         return classes[0];
     }

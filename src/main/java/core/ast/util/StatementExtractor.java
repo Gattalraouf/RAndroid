@@ -74,7 +74,7 @@ public class StatementExtractor {
         return getStatements(statement);
     }
 
-    public List<PsiStatement> getForStatements(PsiStatement statement) {
+    public List<PsiStatement> getForStatements(PsiCodeBlock statement) {
         instanceChecker = new InstanceOfForStatement();
         return getStatements(statement);
     }
