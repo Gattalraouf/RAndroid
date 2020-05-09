@@ -201,14 +201,29 @@ public class SettingsUIDialog extends JDialog {
                     }
                 }
 
+                //verify the variables and their initializer
                  variableList =method.getLocalVariableDeclarations();
                  String variableType="";
                  for (int i =0; i < variableList.size(); i++){
-                     variableType=variableList.get(i).getVariableDeclaration().getTypeElement().getType().getPresentableText();
+                     PsiVariable var =variableList.get(i).getVariableDeclaration();
+                     variableType=var.getTypeElement().getType().getPresentableText();
                      if(!variableType.contains("LinkedHashMap")
                              && !variableType.contains("ConcurrentHashMap")
-                             &&(variableType.contains("HashMap<Long")||variableType.contains("HashMap<Integer"))){
-                         HachMapVariables.add(variableList.get(i).getVariableDeclaration());
+                             &&(variableType.contains("HashMap<Long")
+                             ||variableType.contains("HashMap<Integer"))
+                             //if the variable is an instance of hashmap
+                             ||(var.getInitializer()!=null && !var.getInitializer().getText().contains("new LinkedHashMap")
+                             && !var.getInitializer().getText().contains("new ConcurrentHashMap")
+                             && (var.getInitializer().getText().contains("new HashMap<Long")
+                             ||var.getInitializer().getText().contains("new HashMap<Integer")
+                             ||var.getInitializer().getText().contains("new HashMap")))
+                             //if the variable is casted to hashmap
+                             ||(var.getInitializer()!=null && !var.getInitializer().getText().contains("LinkedHashMap")
+                             && !var.getInitializer().getText().contains("ConcurrentHashMap")
+                             && (var.getInitializer().getText().contains("(HashMap<Long")
+                             ||var.getInitializer().getText().contains("(HashMap<Integer")
+                             ||var.getInitializer().getText().contains("(HashMap")))){
+                         HachMapVariables.add(var);
                      }
                  }
 
@@ -218,7 +233,6 @@ public class SettingsUIDialog extends JDialog {
                         && !returnType.contains("ConcurrentHashMap")
                         && (returnType.contains("HashMap<Long")
                         ||returnType.contains("HashMap<Integer"))){
-
                     HachMapReturns.add(method.getMethodDeclaration().getReturnTypeElement());
                 }
 
@@ -229,9 +243,7 @@ public class SettingsUIDialog extends JDialog {
                             && !paramType.contains("ConcurrentHashMap")
                             && (paramType.contains("HashMap<Long")
                             ||paramType.contains("HashMap<Integer"))){
-
                         HachMapVariables.add(param);
-
                     }
                 }
 
