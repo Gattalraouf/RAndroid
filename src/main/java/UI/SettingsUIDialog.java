@@ -172,9 +172,21 @@ public class SettingsUIDialog extends JDialog {
                 if(!fieldtype.contains("LinkedHashMap")
                         && !fieldtype.contains("ConcurrentHashMap")
                         && (fieldtype.contains("HashMap<Long")
-                        ||fieldtype.contains("HashMap<Integer"))){
+                        ||fieldtype.contains("HashMap<Integer"))
+                        //if the field is an instance of hashmap
+                        ||(field.getInitializer()!=null && !field.getInitializer().getText().contains("new LinkedHashMap")
+                        && !field.getInitializer().getText().contains("new ConcurrentHashMap")
+                        && (field.getInitializer().getText().contains("new HashMap<Long")
+                        ||field.getInitializer().getText().contains("new HashMap<Integer")
+                        ||field.getInitializer().getText().contains("new HashMap")))
+                        //if the field is casted to hashmap
+                        ||(field.getInitializer()!=null && !field.getInitializer().getText().contains("LinkedHashMap")
+                        && !field.getInitializer().getText().contains("ConcurrentHashMap")
+                        && (field.getInitializer().getText().contains("(HashMap<Long")
+                        ||field.getInitializer().getText().contains("(HashMap<Integer")
+                        ||field.getInitializer().getText().contains("(HashMap")))){
                     HachMapVariables.add(field);
-                }
+                    }
             }
 
             //get the local variables of each method
@@ -183,7 +195,7 @@ public class SettingsUIDialog extends JDialog {
                 //get the for statements to remove entryset()
                 for(PsiStatement s:method.getMethodDeclaration().getBody().getStatements()){
                     if(s.getText().startsWith("for")){
-                        if(s.getText().contains("Map.Entry<Integer") && s.getText().contains(".entrySet()")){
+                        if((s.getText().contains("Map.Entry<Integer")|| s.getText().contains("Map.Entry<Long"))&& s.getText().contains(".entrySet()")){
                             ForStatements.add(s);
                         }
                     }
@@ -291,10 +303,10 @@ public class SettingsUIDialog extends JDialog {
 
                     //replace Hashmap<Long|Integer,X> by SparseArray<X>
                     String type=hachMapVariables.get(i).getTypeElement().getType().getPresentableText();
-//                    type.replaceAll("HashMap<Long,","SparseArray<");
-//                    type.replaceAll("HashMap<Integer,","SparseArray<");
-                    elements=type.split(",");
-                    type="SparseArray<".concat(elements[1]);
+                    type=type.replaceAll("HashMap<Long,","SparseArray<");
+                    type=type.replaceAll("HashMap<Integer,","SparseArray<");
+//                    elements=type.split(",");
+//                    type="SparseArray<".concat(elements[1]);
                     newType = factory.createTypeElementFromText(type,file);
                     hachMapVariables.get(i).getTypeElement().replace(newType);
 
@@ -332,6 +344,7 @@ public class SettingsUIDialog extends JDialog {
                     String forStatementText =forStatements.get(i).getText();
 
                     String entity=forStatementText.split(">")[1].split(" ")[1];
+                    //if(entity.equals(" ")) entity=forStatementText.split(">")[1].split(" ")[2];
                     String entityType=forStatementText.split(",")[1].split(">")[0].replaceAll(" ","");
                     String mapName=forStatementText.split(":")[1].split(".entrySet()")[0].replaceAll(" ","");
 
@@ -382,15 +395,8 @@ public class SettingsUIDialog extends JDialog {
         WriteCommandAction.runWriteCommandAction(myProject, new Runnable() {
             @Override
             public void run() {
-                PsiElement e= elementFactory.createStatementFromText("String2",psiFile);
-                String a ="HachMap<Long,Bitmap>";
-                String[] TypeSplitted = a.split(",");
-                a.concat("SparseArray<");
 
-                c.getPsiClass().getFields()[1].getInitializer().getText();
-
-                //c.getPsiClass().getFields()[1].getTypeElement().replace(e);
-
+                elementFactory.createStatementFromText(" ",psiFile);
 
                 PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
                 PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
