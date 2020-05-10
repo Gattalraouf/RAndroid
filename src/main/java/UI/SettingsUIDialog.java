@@ -189,7 +189,7 @@ public class SettingsUIDialog extends JDialog {
                     }
             }
 
-            //get the local variables of each method
+            //get the local variables, for statements, return statements, parameters and anonymous classes of each method
             for (MethodObject method : idsClass.getMethodList()) {
 
                 //get the for statements to remove entryset()
@@ -288,9 +288,9 @@ public class SettingsUIDialog extends JDialog {
             }
 
             //remove duplications
-            Set<PsiVariable> set = new HashSet<>(HachMapVariables);
-            HachMapVariables.clear();
-            HachMapVariables.addAll(set);
+//            Set<PsiVariable> set = new HashSet<>(HachMapVariables);
+//            HachMapVariables.clear();
+//            HachMapVariables.addAll(set);
 
             HashMapToSparseArray(HachMapVariables,HachMapReturns,ForStatements,idsClass);
         }
@@ -312,8 +312,10 @@ public class SettingsUIDialog extends JDialog {
                     String type=hachMapReturns.get(i).getType().getPresentableText();
 //                    type.replaceAll("HashMap<Long,","SparseArray<");
 //                    type.replaceAll("HashMap<Integer,","SparseArray<");
-                    elements=type.split(",");
-                    type="SparseArray<".concat(elements[1]);
+//                    elements=type.split(",");
+//                    type="SparseArray<".concat(elements[1]);
+                    type=type.replaceAll("HashMap<Long,","SparseArray<");
+                    type=type.replaceAll("HashMap<Integer,","SparseArray<");
                     newType = factory.createTypeElementFromText(type,file);
                     hachMapReturns.get(i).replace(newType);
                 }
@@ -363,22 +365,45 @@ public class SettingsUIDialog extends JDialog {
                 for (int i =0; i < forStatements.size(); i++){
 
                     String forStatementText =forStatements.get(i).getText();
+                    String entity;
+                    String entityType;
+                    String test=forStatementText.split(":")[0];
 
-                    String entity=forStatementText.split(">")[1].split(" ")[1];
-                    //if(entity.equals(" ")) entity=forStatementText.split(">")[1].split(" ")[2];
-                    String entityType=forStatementText.split(",")[1].split(">")[0].replaceAll(" ","");
-                    String mapName=forStatementText.split(":")[1].split(".entrySet()")[0].replaceAll(" ","");
+                    if(test.contains(">>")){
+                        entity=forStatementText.split(">>")[1].split(" ")[1];
 
-                    String a ="for(int i = 0; i < "+mapName+".size(); i++)";
+                        entityType=forStatementText.replace(forStatementText
+                                .split(",")[0]+",","")
+                                .split(">>")[0]+">"
+                                .replaceAll(" ","");
+                    }else{
+                        entity=forStatementText.split(">")[1].split(" ")[1];
+                        entityType=forStatementText.split(",")[1].split(">")[0].replaceAll(" ","");
+                    }
+
+
+                    if(!entityType.contains("LinkedHashMap")&&
+                            !entityType.contains("ConcurrentHashMap")
+                            &&(entityType.contains("HashMap<Integer")
+                            ||entityType.contains("HashMap<Long"))){
+
+                        entityType=entityType.replace("HashMap<Integer,","SparseArray<");
+                        entityType=entityType.replace("HashMap<Long,","SparseArray<");
+                    }
+
+                    String mapName=forStatementText.split(":")[1]
+                            .split(".entrySet()")[0]
+                            .replaceAll(" ","");
+
                     String HeadFor="for(int i = 0; i < "+mapName+".size(); i++){ \n" +
                             "            int key = "+mapName+".keyAt(i);\n" +
                             "            "+entityType+" "+ entity +"=  "+mapName+".get(key);";
 
                     String[] splitted =forStatementText.split("\\{");
-                    forStatementText=forStatementText.replaceFirst("\\{"," ");
-                    forStatementText=forStatementText.replace(splitted[0],HeadFor);
-                    forStatementText=forStatementText.replaceAll(entity+".getValue\\(\\)",entity);
-                    forStatementText=forStatementText.replaceAll(entity+".getKey\\(\\)",entity);
+                    forStatementText=forStatementText.replaceFirst("\\{"," ")
+                            .replace(splitted[0],HeadFor)
+                            .replaceAll(entity+".getValue\\(\\)",entity)
+                            .replaceAll(entity+".getKey\\(\\)",entity);
 
                     PsiStatement newStatement =factory.createStatementFromText(forStatementText,file);
                     forStatements.get(i).replace(newStatement);
@@ -400,12 +425,10 @@ public class SettingsUIDialog extends JDialog {
 
         for (String[] target : Iterables.skip(file, 1)) {
             innerClass = getPaprikaTargetClass(target);
-            System.out.println("The initializer is "+innerClass.getFields()[0].getInitializer().getText());
             methods = innerClass.findMethodsByName(getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
-            System.out.println("The type of the local var is "+method.getLocalVariableDeclarations().get(1).getVariableDeclaration().getTypeElement().getType().getPresentableText());
             RunServiceOnBackground(method,c);
 
         }
@@ -419,10 +442,24 @@ public class SettingsUIDialog extends JDialog {
             @Override
             public void run() {
 
-                elementFactory.createStatementFromText(" ",psiFile);
-
                 PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
                 PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
+
+                //declare the context of the service
+                PsiField contextField=elementFactory.createFieldFromText("public Context mContext=this;",psiFile);
+                c.getPsiClass().addAfter(contextField,c.getPsiClass().getLBrace());
+
+                String methodText = onStartCommand.getMethodDeclaration().getBody().getText()
+                        .replaceAll("this;","mContext")
+                        .replaceAll("this,","mContext");
+
+                for (PsiStatement s: onStartCommand.getMethodDeclaration().getBody().getStatements()){
+                    if(s.getText().contains("this;")||s.getText().contains("this,")){
+                        String a = s.getText().replaceAll("this,","mContext,")
+                                .replaceAll("this;","mContext;");
+                        s.replace(elementFactory.createStatementFromText(a,psiFile));
+                    }
+                }
 
                 //get The return Statement
                 PsiReturnStatement returnStat=null;
