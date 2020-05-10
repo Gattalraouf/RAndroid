@@ -287,11 +287,6 @@ public class SettingsUIDialog extends JDialog {
                 }
             }
 
-            //remove duplications
-//            Set<PsiVariable> set = new HashSet<>(HachMapVariables);
-//            HachMapVariables.clear();
-//            HachMapVariables.addAll(set);
-
             HashMapToSparseArray(HachMapVariables,HachMapReturns,ForStatements,idsClass);
         }
     }
