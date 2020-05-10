@@ -305,10 +305,6 @@ public class SettingsUIDialog extends JDialog {
                 for (int i =0; i < hachMapReturns.size(); i++){
                     //replace Hashmap<Long|Integer,X> by SparseArray<X>
                     String type=hachMapReturns.get(i).getType().getPresentableText();
-//                    type.replaceAll("HashMap<Long,","SparseArray<");
-//                    type.replaceAll("HashMap<Integer,","SparseArray<");
-//                    elements=type.split(",");
-//                    type="SparseArray<".concat(elements[1]);
                     type=type.replaceAll("HashMap<Long,","SparseArray<");
                     type=type.replaceAll("HashMap<Integer,","SparseArray<");
                     newType = factory.createTypeElementFromText(type,file);
@@ -323,8 +319,6 @@ public class SettingsUIDialog extends JDialog {
                     String type=hachMapVariables.get(i).getTypeElement().getType().getPresentableText();
                     type=type.replaceAll("HashMap<Long,","SparseArray<");
                     type=type.replaceAll("HashMap<Integer,","SparseArray<");
-//                    elements=type.split(",");
-//                    type="SparseArray<".concat(elements[1]);
                     newType = factory.createTypeElementFromText(type,file);
                     hachMapVariables.get(i).getTypeElement().replace(newType);
 
