@@ -445,14 +445,11 @@ public class SettingsUIDialog extends JDialog {
                 PsiJavaToken LBrace= onStartCommand.getMethodDeclaration().getBody().getLBrace();
                 PsiJavaToken RBrace=onStartCommand.getMethodDeclaration().getBody().getRBrace();
 
-                //declare the context of the service
+                //declare the context of the service public Context mContext=this;
                 PsiField contextField=elementFactory.createFieldFromText("public Context mContext=this;",psiFile);
                 c.getPsiClass().addAfter(contextField,c.getPsiClass().getLBrace());
 
-                String methodText = onStartCommand.getMethodDeclaration().getBody().getText()
-                        .replaceAll("this;","mContext")
-                        .replaceAll("this,","mContext");
-
+                //replace "this" with mContext
                 for (PsiStatement s: onStartCommand.getMethodDeclaration().getBody().getStatements()){
                     if(s.getText().contains("this;")||s.getText().contains("this,")){
                         String a = s.getText().replaceAll("this,","mContext,")
@@ -508,9 +505,7 @@ public class SettingsUIDialog extends JDialog {
                 elem=psiFile.addAfter(stat,elem);
 
                 //Handler backgroundHandler = new Handler(thread.getLooper());
-                type=elementFactory.createTypeElementFromText("Handler",psiFile);
-                elem= psiFile.addAfter(type,elem );
-                stat=elementFactory.createStatementFromText("backgroundHandler = new Handler(thread.getLooper());",psiFile);
+                stat=elementFactory.createStatementFromText("Handler backgroundHandler = new Handler(thread.getLooper());",psiFile);
                 elem= psiFile.addAfter(stat, elem);
 
                 //backgroundHandler.post(r);
