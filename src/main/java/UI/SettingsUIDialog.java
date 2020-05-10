@@ -179,7 +179,7 @@ public class SettingsUIDialog extends JDialog {
                         && (field.getInitializer().getText().contains("new HashMap<Long")
                         ||field.getInitializer().getText().contains("new HashMap<Integer")
                         ||field.getInitializer().getText().contains("new HashMap")))
-                        //if the field is casted to hashmap
+                        //if the field is cast to hashmap
                         ||(field.getInitializer()!=null && !field.getInitializer().getText().contains("LinkedHashMap")
                         && !field.getInitializer().getText().contains("ConcurrentHashMap")
                         && (field.getInitializer().getText().contains("(HashMap<Long")
@@ -217,7 +217,7 @@ public class SettingsUIDialog extends JDialog {
                              && (var.getInitializer().getText().contains("new HashMap<Long")
                              ||var.getInitializer().getText().contains("new HashMap<Integer")
                              ||var.getInitializer().getText().contains("new HashMap")))
-                             //if the variable is casted to hashmap
+                             //if the variable is cast to hashmap
                              ||(var.getInitializer()!=null && !var.getInitializer().getText().contains("LinkedHashMap")
                              && !var.getInitializer().getText().contains("ConcurrentHashMap")
                              && (var.getInitializer().getText().contains("(HashMap<Long")
@@ -264,6 +264,7 @@ public class SettingsUIDialog extends JDialog {
 
                     //verify the variables of each method of the anonymous class
                     anonymousMethods=anonumousClasses.get(i).getMethodList();
+
                     for (int j =0; j < anonymousMethods.size(); j++){
                         variableList=anonymousMethods.get(j).getLocalVariableDeclarations();
                         for (int k =0; k < variableList.size(); k++){
@@ -274,6 +275,14 @@ public class SettingsUIDialog extends JDialog {
                                 }
                             }
                         }
+                            //get the for statements to remove entryset()
+                            for(PsiStatement s:anonymousMethods.get(j).getMethodDeclaration().getBody().getStatements()){
+                                if(s.getText().startsWith("for")){
+                                    if((s.getText().contains("Map.Entry<Integer")|| s.getText().contains("Map.Entry<Long"))&& s.getText().contains(".entrySet()")){
+                                        ForStatements.add(s);
+                                    }
+                                }
+                            }
                     }
                 }
             }
@@ -366,8 +375,10 @@ public class SettingsUIDialog extends JDialog {
                             "            "+entityType+" "+ entity +"=  "+mapName+".get(key);";
 
                     String[] splitted =forStatementText.split("\\{");
+                    forStatementText=forStatementText.replaceFirst("\\{"," ");
                     forStatementText=forStatementText.replace(splitted[0],HeadFor);
                     forStatementText=forStatementText.replaceAll(entity+".getValue\\(\\)",entity);
+                    forStatementText=forStatementText.replaceAll(entity+".getKey\\(\\)",entity);
 
                     PsiStatement newStatement =factory.createStatementFromText(forStatementText,file);
                     forStatements.get(i).replace(newStatement);
