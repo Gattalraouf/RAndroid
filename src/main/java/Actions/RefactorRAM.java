@@ -1,7 +1,6 @@
 package Actions;
 
 import Components.RAMSettingsScreen;
-import Components.UIOSettingsScreen;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;

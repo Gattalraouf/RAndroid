@@ -20,28 +20,30 @@
     <actions>
         <group id="RAndroid.TopMenu"
                text="_RAndroid"
+               popup="true"
                description="RAndroid toolbar menu">
-            <add-to-group group-id="MainMenu" anchor="last"/>
+            <add-to-group group-id="RefactoringMenu" anchor="first"/>
+
             <action id="IOD"
                     class="Actions.RefactorIOD"
                     text="_Refactor IOD"
                     description="Refactoring IOD Code smell"/>
-            <action id="RAM"
-                    class="Actions.RefactorRAM"
-                    text="_Refactor RAM"
-                    description="Refactoring RAM Code smell"/>
-            <action id="UIO"
-                    class="Actions.RefactorUIO"
-                    text="_Refactor UIO"
-                    description="Refactoring UIO Code smell"/>
             <action id="HSS"
                     class="Actions.RefactorHSS"
                     text="_Refactor HSS"
                     description="Refactoring HSS Code smell"/>
+            <action id="RAM"
+                    class="Actions.RefactorRAM"
+                    text="_Refactor RAM"
+                    description="Refactoring RAM Code smell"/>
             <action id="IDS"
                     class="Actions.RefactorIDS"
                     text="_Refactor IDS"
                     description="Refactoring IDS Code smell"/>
+            <action id="UIO"
+                    class="Actions.RefactorUIO"
+                    text="_Refactor UIO"
+                    description="Refactoring UIO Code smell"/>
         </group>
     </actions>
 
