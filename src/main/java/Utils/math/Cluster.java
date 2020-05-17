@@ -1,6 +1,6 @@
 package Utils.math;
 
-import core.distance.Entity;
+import AdaptedJDeodorant.core.distance.Entity;
 
 import java.util.ArrayList;
 

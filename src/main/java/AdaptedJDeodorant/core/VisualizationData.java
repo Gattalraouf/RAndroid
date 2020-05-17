@@ -1,0 +1,7 @@
+package AdaptedJDeodorant.core;
+
+interface VisualizationData {
+    int getDistinctSourceDependencies();
+
+    int getDistinctTargetDependencies();
+}

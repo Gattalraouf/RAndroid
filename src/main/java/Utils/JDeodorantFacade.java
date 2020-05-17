@@ -2,15 +2,14 @@ package Utils;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiStatement;
 import com.intellij.psi.PsiVariable;
-import core.ast.*;
-import core.ast.decomposition.cfg.*;
-import core.ast.util.StatementExtractor;
-import core.distance.DistanceMatrix;
-import core.distance.MoveMethodCandidateRefactoring;
-import core.distance.MySystem;
-import core.distance.ProjectInfo;
+import AdaptedJDeodorant.core.ast.*;
+import AdaptedJDeodorant.core.ast.decomposition.cfg.*;
+import AdaptedJDeodorant.core.ast.util.StatementExtractor;
+import AdaptedJDeodorant.core.distance.DistanceMatrix;
+import AdaptedJDeodorant.core.distance.MoveMethodCandidateRefactoring;
+import AdaptedJDeodorant.core.distance.MySystem;
+import AdaptedJDeodorant.core.distance.ProjectInfo;
 
 import java.util.*;
 
