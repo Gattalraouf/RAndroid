@@ -25,23 +25,23 @@
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
             <action id="IOD"
-                    class="Actions.RefactorIOD"
+                    class="UserInterface.Actions.RefactorIOD"
                     text="_Refactor IOD"
                     description="Refactoring IOD Code smell"/>
             <action id="HSS"
-                    class="Actions.RefactorHSS"
+                    class="UserInterface.Actions.RefactorHSS"
                     text="_Refactor HSS"
                     description="Refactoring HSS Code smell"/>
             <action id="RAM"
-                    class="Actions.RefactorRAM"
+                    class="UserInterface.Actions.RefactorRAM"
                     text="_Refactor RAM"
                     description="Refactoring RAM Code smell"/>
             <action id="IDS"
-                    class="Actions.RefactorIDS"
+                    class="UserInterface.Actions.RefactorIDS"
                     text="_Refactor IDS"
                     description="Refactoring IDS Code smell"/>
             <action id="UIO"
-                    class="Actions.RefactorUIO"
+                    class="UserInterface.Actions.RefactorUIO"
                     text="_Refactor UIO"
                     description="Refactoring UIO Code smell"/>
         </group>
@@ -51,7 +51,7 @@
         <!-- Add your project components here -->
         <component>
             <implementation-class>
-                Components.IODSettingsScreen
+                UserInterface.Components.IODSettingsScreen
             </implementation-class>
         </component>
     </project-components>
