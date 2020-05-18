@@ -12,6 +12,10 @@ import com.intellij.psi.PsiStatement;
 
 public class RAMRefactoringUtility extends IRefactor {
 
+    public RAMRefactoringUtility(){
+        codeSmellName="RAM";
+    }
+
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
         analyzer = new RAMAnalyzer(filePath, myProject);

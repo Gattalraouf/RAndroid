@@ -5,9 +5,9 @@ import UserInterface.Actions.RefactorIDS;
 
 public class IDSSettingsScreen extends SettingsScreen {
 
-    public IDSSettingsScreen(){
+    public IDSSettingsScreen(RefactorIDS action){
         correctionUtility= new IDSRefactoringUtility();
-        action=new RefactorIDS();
+        this.action=action;
     }
 
 }

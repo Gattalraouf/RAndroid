@@ -6,9 +6,9 @@ import UserInterface.Actions.RefactorUIO;
 
 public class UIOSettingsScreen extends SettingsScreen {
 
-    public UIOSettingsScreen(){
+    public UIOSettingsScreen(RefactorUIO action){
         correctionUtility= new UIORefactoringUtility();
-        action=new RefactorUIO();
+        this.action=action;
     }
 
 }

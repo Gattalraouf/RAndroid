@@ -6,9 +6,9 @@ import UserInterface.Actions.RefactorHSS;
 
 public class HSSSettingsScreen extends SettingsScreen {
 
-    public HSSSettingsScreen(){
+    public HSSSettingsScreen(RefactorHSS action){
+        this.action=action;
         correctionUtility= new HSSRefactoringUtility();
-        action=new RefactorHSS();
     }
 
 }

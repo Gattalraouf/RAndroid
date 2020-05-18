@@ -6,8 +6,9 @@ import com.intellij.openapi.project.Project;
 public abstract class IAnalyzer {
     String codeSmell;
     String filePath;
-    CSVReadingManager CSVReader;
     int index=1;
+    CSVReadingManager CSVReader;
+
 
     public IAnalyzer(String filepath){
         this.filePath=filepath;
@@ -20,5 +21,4 @@ public abstract class IAnalyzer {
     }
 
     public abstract void findClass();
-
 }

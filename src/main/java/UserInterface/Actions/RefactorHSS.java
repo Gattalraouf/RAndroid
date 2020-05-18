@@ -9,7 +9,7 @@ public class RefactorHSS extends RAndroidAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         super.actionPerformed(e);
-        screen = new HSSSettingsScreen();
+        screen = new HSSSettingsScreen(this);
         screen.openComponent();
     }
 }

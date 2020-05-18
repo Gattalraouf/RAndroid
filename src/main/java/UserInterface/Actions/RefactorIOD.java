@@ -9,7 +9,7 @@ public class RefactorIOD extends RAndroidAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         super.actionPerformed(e);
-        screen = new IODSettingsScreen();
+        screen = new IODSettingsScreen(this);
         screen.openComponent();
     }
 }

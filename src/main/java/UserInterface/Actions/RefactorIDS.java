@@ -9,7 +9,7 @@ public class RefactorIDS extends RAndroidAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         super.actionPerformed(e);
-        screen = new IDSSettingsScreen();
+        screen = new IDSSettingsScreen(this);
         screen.openComponent();
     }
 }

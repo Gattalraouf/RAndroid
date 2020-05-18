@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 public class IDSRefactoringUtility extends IRefactor {
 
+    public IDSRefactoringUtility(){
+        codeSmellName="IDS";
+    }
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {

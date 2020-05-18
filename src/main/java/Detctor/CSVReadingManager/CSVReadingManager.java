@@ -1,17 +1,8 @@
 package Detctor.CSVReadingManager;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiJavaFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import AdaptedJDeodorant.core.ast.ASTReader;
-import AdaptedJDeodorant.core.ast.ClassObject;
-import AdaptedJDeodorant.core.distance.ProjectInfo;
 
 import java.io.FileReader;
 import java.io.IOException;

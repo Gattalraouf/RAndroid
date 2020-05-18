@@ -8,7 +8,7 @@ public class RefactorRAM extends RAndroidAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         super.actionPerformed(e);
-        screen = new RAMSettingsScreen();
+        screen = new RAMSettingsScreen(this);
         screen.openComponent();
     }
 }

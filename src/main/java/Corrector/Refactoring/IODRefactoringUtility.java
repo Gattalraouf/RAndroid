@@ -33,7 +33,9 @@ import static java.util.stream.Collectors.toSet;
 
 public class IODRefactoringUtility extends IRefactor {
 
-
+    public IODRefactoringUtility(){
+        codeSmellName="IOD";
+    }
     @Override
     public void onRefactor(String filePath,String title, Project myProject) {
         analyzer = new IODAnalyzer(filePath);

@@ -5,9 +5,9 @@ import UserInterface.Actions.RefactorRAM;
 
 public class RAMSettingsScreen extends SettingsScreen {
 
-    public RAMSettingsScreen(){
+    public RAMSettingsScreen(RefactorRAM action){
         correctionUtility= new RAMRefactoringUtility();
-        action=new RefactorRAM();
+        this.action=action;
     }
 
 }

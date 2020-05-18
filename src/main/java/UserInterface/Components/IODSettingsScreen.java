@@ -7,9 +7,9 @@ import UserInterface.Actions.RefactorIOD;
 
 public class IODSettingsScreen extends SettingsScreen {
 
-    public IODSettingsScreen(){
+    public IODSettingsScreen(RefactorIOD action){
         correctionUtility= new IODRefactoringUtility();
-        action=new RefactorIOD();
+        this.action=action;
     }
 
 }

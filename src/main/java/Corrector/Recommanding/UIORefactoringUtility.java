@@ -17,7 +17,10 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class UIORefactoringUtility extends IRecommander {
-    private UIOAnalyzer uioAnalyzer;
+
+    public UIORefactoringUtility(){
+        codeSmellName="UIO";
+    }
 
     private void clipRect(MethodObject onDraw, ClassObject c, Project myProject) {
         PsiJavaFile file = c.getPsiFile();
@@ -102,8 +105,8 @@ public class UIORefactoringUtility extends IRecommander {
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
-        uioAnalyzer=new UIOAnalyzer(filePath);
-        ArrayList<String[]> file=uioAnalyzer.getFile();
+        analyzer=new UIOAnalyzer(filePath);
+        ArrayList<String[]> file=((UIOAnalyzer)analyzer).getFile();
         PsiClass innerClass;
         PsiMethod[] methods;
         ClassObject c;
@@ -111,8 +114,8 @@ public class UIORefactoringUtility extends IRecommander {
         ASTReader astReader;
 
         for (String[] target : Iterables.skip(file, 1)) {
-            innerClass = ((PaprikaAnalyzer)uioAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
-            methods = innerClass.findMethodsByName(uioAnalyzer.getTargetMethodName(target), false);
+            innerClass = ((PaprikaAnalyzer)analyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(((UIOAnalyzer)analyzer).getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());

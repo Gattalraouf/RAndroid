@@ -8,7 +8,7 @@ public class RefactorUIO extends RAndroidAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
         super.actionPerformed(e);
-        screen = new UIOSettingsScreen();
+        screen = new UIOSettingsScreen(this);
         screen.openComponent();
     }
 }
