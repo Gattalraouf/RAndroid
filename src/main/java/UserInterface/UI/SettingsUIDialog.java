@@ -1,5 +1,6 @@
 package UserInterface.UI;
 
+import Corrector.ICorrector;
 import Corrector.Recommanding.IRecommander;
 import Corrector.Recommanding.UIORefactoringUtility;
 import Corrector.Refactoring.*;
@@ -24,18 +25,12 @@ public class SettingsUIDialog extends JDialog {
     public String filePath = "";
     private IRecommander recommanding = null;
     private IRefactor refactoring = null;
+    private ICorrector correction;
     private Project myProject;
 
-    public SettingsUIDialog(String title,IRecommander recommander, Project project) {
+    public SettingsUIDialog(String title,ICorrector corrector, Project project){
         Title.setText(title);
-        this.recommanding=recommander;
-        this.myProject=project;
-        createComponent();
-    }
-
-    public SettingsUIDialog(String title,IRefactor refactor, Project project) {
-        Title.setText(title);
-        this.refactoring=refactor;
+        this.correction=corrector;
         this.myProject=project;
         createComponent();
     }
@@ -101,11 +96,7 @@ public class SettingsUIDialog extends JDialog {
 
     private void onOK() {
         filePath = SelectedPath.getText();
-        if(refactoring!=null){
-            refactoring.onRefactor(filePath, Title.getText(), myProject);
-        }else if(recommanding!=null){
-            recommanding.onRefactor(filePath, Title.getText(), myProject);
-        }
+        correction.onRefactor(filePath, Title.getText(), myProject);
         dispose();
     }
 

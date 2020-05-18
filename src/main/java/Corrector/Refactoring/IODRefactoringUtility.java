@@ -30,7 +30,7 @@ import java.util.*;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-public class IODRefactoringUtility implements IRefactor{
+public class IODRefactoringUtility extends IRefactor {
 
     private IODAnalyzer iodAnalyzer = new IODAnalyzer();
 

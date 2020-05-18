@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementFactory;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiStatement;
 
-public class RAMRefactoringUtility implements IRefactor {
+public class RAMRefactoringUtility extends IRefactor {
 
 
     @Override

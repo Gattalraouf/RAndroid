@@ -8,7 +8,7 @@ import com.intellij.psi.*;
 
 import java.util.ArrayList;
 
-public class IDSRefactoringUtility implements IRefactor {
+public class IDSRefactoringUtility extends IRefactor {
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {

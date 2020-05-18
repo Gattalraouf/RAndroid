@@ -12,7 +12,7 @@ import AdaptedJDeodorant.core.distance.ProjectInfo;
 
 import java.util.ArrayList;
 
-public class HSSRefactoringUtility implements IRefactor {
+public class HSSRefactoringUtility extends IRefactor {
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {

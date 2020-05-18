@@ -16,7 +16,7 @@ import AdaptedJDeodorant.core.distance.ProjectInfo;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class UIORefactoringUtility implements IRecommander {
+public class UIORefactoringUtility extends IRecommander {
 
     public void onRefactorUIO(String filePath, String title, Project myProject) {
         ArrayList<String[]> file;
