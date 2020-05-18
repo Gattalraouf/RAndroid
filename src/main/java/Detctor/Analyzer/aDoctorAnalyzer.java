@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class aDoctorAnalyzer extends IAnalyzer {
 
-    ArrayList<ClassObject> Classes;
+    protected ArrayList<ClassObject> Classes;
 
     public aDoctorAnalyzer(String filepath) {
         super(filepath);

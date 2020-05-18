@@ -15,12 +15,14 @@ import java.util.ArrayList;
 
 public class HSSRefactoringUtility extends IRefactor {
 
-    private HSSAnalyzer hssAnalyzer;
+    public HSSRefactoringUtility(){
+        codeSmellName="HSS";
+    }
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
-        hssAnalyzer=new HSSAnalyzer(filePath);
-        ArrayList<String[]> file=hssAnalyzer.getFile();
+        this.analyzer =new HSSAnalyzer(filePath);
+        ArrayList<String[]> file= ((HSSAnalyzer)analyzer).getFile();
         PsiClass innerClass;
         PsiMethod[] methods;
         ClassObject c;
@@ -29,8 +31,8 @@ public class HSSRefactoringUtility extends IRefactor {
 
 
         for (String[] target : Iterables.skip(file, 1)) {
-            innerClass =((PaprikaAnalyzer)hssAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
-            methods = innerClass.findMethodsByName(hssAnalyzer.getTargetMethodName(target), false);
+            innerClass =((PaprikaAnalyzer) analyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(((PaprikaAnalyzer)analyzer).getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());

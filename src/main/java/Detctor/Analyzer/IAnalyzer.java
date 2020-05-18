@@ -1,9 +1,7 @@
 package Detctor.Analyzer;
 
-
 import Detctor.CSVReadingManager.CSVReadingManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiClass;
 
 public abstract class IAnalyzer {
     String codeSmell;

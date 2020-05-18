@@ -12,10 +12,16 @@ import java.util.List;
 
 public class IDSAnalyzer extends aDoctorAnalyzer {
 
-    private ArrayList<ArrayList<PsiVariable>> HachMapVariables = new ArrayList<>();
-    private ArrayList<ArrayList<PsiTypeElement>> HachMapReturns = new ArrayList<>();
-    private ArrayList<ArrayList<PsiStatement>> ForStatements = new ArrayList<>();
-    private ArrayList<ClassObject> idsClasses = new ArrayList<>();
+    protected ArrayList<ArrayList<PsiVariable>> HachMapVariables = new ArrayList<>();
+    protected ArrayList<ArrayList<PsiTypeElement>> HachMapReturns = new ArrayList<>();
+    protected ArrayList<ArrayList<PsiStatement>> ForStatements = new ArrayList<>();
+    protected ArrayList<ClassObject> idsClasses = new ArrayList<>();
+
+    public IDSAnalyzer(String filePath, Project myProject) {
+        super(filePath);
+        codeSmell="IDS";
+        getIDSCandidates(filePath, myProject);
+    }
 
     public ArrayList<ArrayList<PsiVariable>> getHachMapVariables() {
         return HachMapVariables;
@@ -49,11 +55,7 @@ public class IDSAnalyzer extends aDoctorAnalyzer {
         this.idsClasses = idsClasses;
     }
 
-    public IDSAnalyzer(String filePath, Project myProject) {
-        super(filePath);
-        codeSmell="IDS";
-        getIDSCandidates(filePath, myProject);
-    }
+
 
     private void getIDSCandidates(String filePath, Project myProject) {
         ArrayList<ClassObject> idsClasses;

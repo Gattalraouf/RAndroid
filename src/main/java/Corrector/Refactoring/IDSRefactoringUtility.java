@@ -2,21 +2,24 @@ package Corrector.Refactoring;
 
 import AdaptedJDeodorant.core.ast.ClassObject;
 import Detctor.Analyzer.IDSAnalyzer;
+import Detctor.Analyzer.aDoctorAnalyzer;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
+import com.sun.xml.bind.v2.model.core.ID;
 
 import java.util.ArrayList;
 
 public class IDSRefactoringUtility extends IRefactor {
 
+
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
-        IDSAnalyzer ids = new IDSAnalyzer(filePath, myProject);
+        analyzer = new IDSAnalyzer(filePath, myProject);
         int i = 0;
 
-        for (ClassObject idsClass : ids.getIdsClasses()) {
-            HashMapToSparseArray(ids.getHachMapVariables().get(i), ids.getHachMapReturns().get(i), ids.getForStatements().get(i), idsClass, myProject);
+        for (ClassObject idsClass : ((IDSAnalyzer)analyzer).getIdsClasses()) {
+            HashMapToSparseArray(((IDSAnalyzer)analyzer).getHachMapVariables().get(i), ((IDSAnalyzer)analyzer).getHachMapReturns().get(i), ((IDSAnalyzer)analyzer).getForStatements().get(i), idsClass, myProject);
             i++;
         }
 

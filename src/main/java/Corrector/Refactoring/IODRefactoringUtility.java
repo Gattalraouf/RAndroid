@@ -8,6 +8,7 @@ import AdaptedJDeodorant.core.distance.ProjectInfo;
 import AdaptedJDeodorant.ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import AdaptedJDeodorant.ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
 import AdaptedJDeodorant.ide.refactoring.extractMethod.MyExtractMethodProcessor;
+import Detctor.Analyzer.IDSAnalyzer;
 import Detctor.Analyzer.IODAnalyzer;
 import Detctor.Analyzer.PaprikaAnalyzer;
 import Utils.JDeodorantFacade;
@@ -32,12 +33,11 @@ import static java.util.stream.Collectors.toSet;
 
 public class IODRefactoringUtility extends IRefactor {
 
-    private IODAnalyzer iodAnalyzer;
 
     @Override
     public void onRefactor(String filePath,String title, Project myProject) {
-        iodAnalyzer = new IODAnalyzer(filePath);
-        ArrayList<String[]> file = iodAnalyzer.getFile();
+        analyzer = new IODAnalyzer(filePath);
+        ArrayList<String[]> file = ((IODAnalyzer)analyzer).getFile();
         PsiClass innerClass;
         Set<ASTSliceGroup> candidates;
         PsiMethod[] methods;
@@ -46,8 +46,8 @@ public class IODRefactoringUtility extends IRefactor {
 
         for (String[] target : Iterables.skip(file, 1)) {
             candidates = new HashSet<>();
-            innerClass = ((PaprikaAnalyzer)iodAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
-            methods = innerClass.findMethodsByName(iodAnalyzer.getTargetMethodName(target), false);
+            innerClass = ((PaprikaAnalyzer)analyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(((IODAnalyzer)analyzer).getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             //Handle long Method case
@@ -82,7 +82,7 @@ public class IODRefactoringUtility extends IRefactor {
      * Checks that the slice can be extracted into a separate method without compilation errors.
      */
     private boolean canBeExtracted(ASTSlice slice, Project myProject) {
-        SmartList<PsiStatement> statementsToExtract = iodAnalyzer.getStatementsToExtract(slice);
+        SmartList<PsiStatement> statementsToExtract = ((IODAnalyzer)analyzer).getStatementsToExtract(slice);
 
         MyExtractMethodProcessor processor = new MyExtractMethodProcessor(myProject,
                 null, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(), "Refactoring", "", HelpID.EXTRACT_METHOD,
@@ -109,7 +109,7 @@ public class IODRefactoringUtility extends IRefactor {
     private Runnable doExtract(ASTSlice slice) {
         return () -> {
             Editor editor = FileEditorManager.getInstance(slice.getSourceMethodDeclaration().getProject()).getSelectedTextEditor();
-            SmartList<PsiStatement> statementsToExtract = iodAnalyzer.getStatementsToExtract(slice);
+            SmartList<PsiStatement> statementsToExtract = ((IODAnalyzer)analyzer).getStatementsToExtract(slice);
 
             MyExtractMethodProcessor processor = new MyExtractMethodProcessor(slice.getSourceMethodDeclaration().getProject(),
                     editor, statementsToExtract.toArray(new PsiElement[0]), slice.getLocalVariableCriterion().getType(),

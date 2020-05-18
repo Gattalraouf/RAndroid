@@ -9,7 +9,7 @@ import com.intellij.psi.PsiClass;
 import java.util.ArrayList;
 
 public abstract class PaprikaAnalyzer extends IAnalyzer {
-    PsiClass targetClass;
+    protected PsiClass targetClass;
 
     public PaprikaAnalyzer(String filepath) {
         super(filepath);
