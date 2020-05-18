@@ -5,11 +5,19 @@ import AdaptedJDeodorant.core.ast.decomposition.cfg.PDGNode;
 import com.intellij.psi.PsiStatement;
 import com.intellij.util.SmartList;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import static Utils.PsiUtils.isChild;
 
-public class IODAnalyzer {
+public class IODAnalyzer extends PaprikaAnalyzer {
+
+    public IODAnalyzer(String filepath){
+        super(filepath);
+        this.codeSmell="IOD";
+    }
+
+
     /**
      * Collects statements that can be extracted into a separate method.
      */

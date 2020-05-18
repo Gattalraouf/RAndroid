@@ -4,14 +4,13 @@ import AdaptedJDeodorant.core.ast.AnonymousClassDeclarationObject;
 import AdaptedJDeodorant.core.ast.ClassObject;
 import AdaptedJDeodorant.core.ast.LocalVariableDeclarationObject;
 import AdaptedJDeodorant.core.ast.MethodObject;
-import Detctor.CSVReadingManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class IDSAnalyzer {
+public class IDSAnalyzer extends aDoctorAnalyzer {
 
     private ArrayList<ArrayList<PsiVariable>> HachMapVariables = new ArrayList<>();
     private ArrayList<ArrayList<PsiTypeElement>> HachMapReturns = new ArrayList<>();
@@ -51,12 +50,14 @@ public class IDSAnalyzer {
     }
 
     public IDSAnalyzer(String filePath, Project myProject) {
+        super(filePath);
+        codeSmell="IDS";
         getIDSCandidates(filePath, myProject);
     }
 
     private void getIDSCandidates(String filePath, Project myProject) {
         ArrayList<ClassObject> idsClasses;
-        idsClasses = CSVReadingManager.getaDoctorTargetClass(filePath, "IDS", myProject);
+        idsClasses = ((aDoctorAnalyzer)getTargetClass(null,filePath," ",myProject)).getClasses();
 
         for (ClassObject idsClass : idsClasses) {
             List<LocalVariableDeclarationObject> variableList;

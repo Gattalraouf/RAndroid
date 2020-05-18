@@ -1,6 +1,7 @@
 package Corrector.Refactoring;
 
-import Detctor.CSVReadingManager;
+import Detctor.Analyzer.HSSAnalyzer;
+import Detctor.Analyzer.PaprikaAnalyzer;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -14,10 +15,12 @@ import java.util.ArrayList;
 
 public class HSSRefactoringUtility extends IRefactor {
 
+    private HSSAnalyzer hssAnalyzer;
+
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
-        ArrayList<String[]> file;
-        file = CSVReadingManager.ReadFile(filePath);
+        hssAnalyzer=new HSSAnalyzer(filePath);
+        ArrayList<String[]> file=hssAnalyzer.getFile();
         PsiClass innerClass;
         PsiMethod[] methods;
         ClassObject c;
@@ -26,8 +29,8 @@ public class HSSRefactoringUtility extends IRefactor {
 
 
         for (String[] target : Iterables.skip(file, 1)) {
-            innerClass = CSVReadingManager.getPaprikaTargetClass(target, title, myProject, "HSS");
-            methods = innerClass.findMethodsByName(CSVReadingManager.getTargetMethodName(target, title, "HSS"), false);
+            innerClass =((PaprikaAnalyzer)hssAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(hssAnalyzer.getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());

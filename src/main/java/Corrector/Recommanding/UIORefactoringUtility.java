@@ -1,6 +1,6 @@
 package Corrector.Recommanding;
-
-import Detctor.CSVReadingManager;
+import Detctor.Analyzer.PaprikaAnalyzer;
+import Detctor.Analyzer.UIOAnalyzer;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
@@ -17,26 +17,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 public class UIORefactoringUtility extends IRecommander {
-
-    public void onRefactorUIO(String filePath, String title, Project myProject) {
-        ArrayList<String[]> file;
-        file = CSVReadingManager.ReadFile(filePath);
-        PsiClass innerClass;
-        PsiMethod[] methods;
-        ClassObject c;
-        MethodObject method;
-        ASTReader astReader;
-
-        for (String[] target : Iterables.skip(file, 1)) {
-            innerClass = CSVReadingManager.getPaprikaTargetClass(target, title, myProject, "UIO");
-            methods = innerClass.findMethodsByName(CSVReadingManager.getTargetMethodName(target, title, "UIO"), false);
-            astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
-            c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
-            method = c.getMethodByName(methods[0].getName());
-            clipRect(method, c, myProject);
-        }
-
-    }
+    private UIOAnalyzer uioAnalyzer;
 
     private void clipRect(MethodObject onDraw, ClassObject c, Project myProject) {
         PsiJavaFile file = c.getPsiFile();
@@ -121,8 +102,8 @@ public class UIORefactoringUtility extends IRecommander {
 
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
-        ArrayList<String[]> file;
-        file = CSVReadingManager.ReadFile(filePath);
+        uioAnalyzer=new UIOAnalyzer(filePath);
+        ArrayList<String[]> file=uioAnalyzer.getFile();
         PsiClass innerClass;
         PsiMethod[] methods;
         ClassObject c;
@@ -130,8 +111,8 @@ public class UIORefactoringUtility extends IRecommander {
         ASTReader astReader;
 
         for (String[] target : Iterables.skip(file, 1)) {
-            innerClass = CSVReadingManager.getPaprikaTargetClass(target, title, myProject, "UIO");
-            methods = innerClass.findMethodsByName(CSVReadingManager.getTargetMethodName(target, title, "UIO"), false);
+            innerClass = ((PaprikaAnalyzer)uioAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(uioAnalyzer.getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());

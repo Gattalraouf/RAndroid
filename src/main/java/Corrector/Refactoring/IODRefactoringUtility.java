@@ -9,7 +9,7 @@ import AdaptedJDeodorant.ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import AdaptedJDeodorant.ide.refactoring.extractMethod.ExtractMethodCandidateGroup;
 import AdaptedJDeodorant.ide.refactoring.extractMethod.MyExtractMethodProcessor;
 import Detctor.Analyzer.IODAnalyzer;
-import Detctor.CSVReadingManager;
+import Detctor.Analyzer.PaprikaAnalyzer;
 import Utils.JDeodorantFacade;
 import com.google.common.collect.Iterables;
 import com.intellij.openapi.application.TransactionGuard;
@@ -32,12 +32,12 @@ import static java.util.stream.Collectors.toSet;
 
 public class IODRefactoringUtility extends IRefactor {
 
-    private IODAnalyzer iodAnalyzer = new IODAnalyzer();
+    private IODAnalyzer iodAnalyzer;
 
     @Override
     public void onRefactor(String filePath,String title, Project myProject) {
-        ArrayList<String[]> file;
-        file = CSVReadingManager.ReadFile(filePath);
+        iodAnalyzer = new IODAnalyzer(filePath);
+        ArrayList<String[]> file = iodAnalyzer.getFile();
         PsiClass innerClass;
         Set<ASTSliceGroup> candidates;
         PsiMethod[] methods;
@@ -46,8 +46,8 @@ public class IODRefactoringUtility extends IRefactor {
 
         for (String[] target : Iterables.skip(file, 1)) {
             candidates = new HashSet<>();
-            innerClass = CSVReadingManager.getPaprikaTargetClass(target, title, myProject, "IOD");
-            methods = innerClass.findMethodsByName(CSVReadingManager.getTargetMethodName(target, title, "IOD"), false);
+            innerClass = ((PaprikaAnalyzer)iodAnalyzer.getTargetClass(target," ", title, myProject)).getTargetC();
+            methods = innerClass.findMethodsByName(iodAnalyzer.getTargetMethodName(target), false);
             astReader = new ASTReader(new ProjectInfo(myProject), innerClass);
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             //Handle long Method case
