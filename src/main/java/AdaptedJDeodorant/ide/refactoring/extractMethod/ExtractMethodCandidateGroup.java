@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
-import static Utils.PsiUtils.*;
+import static AdaptedJDeodorant.Utils.PsiUtils.*;
 
 /**
  * Representation of a refactoring, which suggests to extract code into separate method.

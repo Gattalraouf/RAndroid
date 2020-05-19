@@ -1,6 +1,6 @@
 package AdaptedJDeodorant.core.distance;
 
-import Utils.IntelliJDeodorantBundle;
+import AdaptedJDeodorant.Utils.IntelliJDeodorantBundle;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiMethod;

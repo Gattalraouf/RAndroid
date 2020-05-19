@@ -1,6 +1,6 @@
 package AdaptedJDeodorant.core.distance;
 
-import Utils.PsiUtils;
+import AdaptedJDeodorant.Utils.PsiUtils;
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Ref;

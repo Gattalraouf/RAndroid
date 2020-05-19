@@ -9,7 +9,7 @@ import AdaptedJDeodorant.core.ast.decomposition.cfg.PlainVariable;
 
 import java.util.*;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class ConstructorObject implements AbstractMethodDeclaration {
 

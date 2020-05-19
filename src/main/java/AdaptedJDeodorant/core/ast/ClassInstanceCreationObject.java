@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class ClassInstanceCreationObject extends CreationObject {
 

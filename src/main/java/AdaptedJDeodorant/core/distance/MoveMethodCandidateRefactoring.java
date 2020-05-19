@@ -12,7 +12,7 @@ import AdaptedJDeodorant.core.ast.decomposition.cfg.PlainVariable;
 
 import java.util.*;
 
-import static Utils.PsiUtils.isTestClass;
+import static AdaptedJDeodorant.Utils.PsiUtils.isTestClass;
 
 public class MoveMethodCandidateRefactoring extends CandidateRefactoring implements Comparable<MoveMethodCandidateRefactoring> {
     private final MySystem system;

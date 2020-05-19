@@ -14,8 +14,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 
-import static Utils.PsiUtils.getHumanReadableName;
-import static Utils.PsiUtils.getNumberOfLinesInMethod;
+import static AdaptedJDeodorant.Utils.PsiUtils.getHumanReadableName;
+import static AdaptedJDeodorant.Utils.PsiUtils.getNumberOfLinesInMethod;
 
 /**
  * Representation of a refactoring, which moves method to a target class.

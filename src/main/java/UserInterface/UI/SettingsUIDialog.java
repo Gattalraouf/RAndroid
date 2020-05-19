@@ -23,8 +23,6 @@ public class SettingsUIDialog extends JDialog {
     private JButton buttonLoadFile;
     private JLabel Title;
     public String filePath = "";
-    private IRecommander recommanding = null;
-    private IRefactor refactoring = null;
     private ICorrector correction;
     private Project myProject;
 

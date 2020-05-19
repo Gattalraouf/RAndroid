@@ -4,7 +4,7 @@ import com.intellij.psi.PsiArrayAccessExpression;
 import com.intellij.psi.PsiExpression;
 import com.intellij.psi.SmartPsiElementPointer;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 class ArrayAccessObject {
     private final TypeObject type;

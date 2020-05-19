@@ -1,6 +1,6 @@
 package AdaptedJDeodorant.core.ast;
 
-import Utils.IntelliJDeodorantBundle;
+import AdaptedJDeodorant.Utils.IntelliJDeodorantBundle;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.*;
 import com.intellij.util.SmartList;

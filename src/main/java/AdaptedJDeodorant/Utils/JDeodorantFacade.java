@@ -1,4 +1,4 @@
-package Utils;
+package AdaptedJDeodorant.Utils;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.psi.PsiElement;

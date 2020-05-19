@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class FieldObject extends VariableDeclarationObject {
 

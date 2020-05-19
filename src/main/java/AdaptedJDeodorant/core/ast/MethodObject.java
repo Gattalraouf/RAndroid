@@ -15,7 +15,7 @@ import AdaptedJDeodorant.core.ast.util.MethodDeclarationUtility;
 
 import java.util.*;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class MethodObject implements AbstractMethodDeclaration {
 

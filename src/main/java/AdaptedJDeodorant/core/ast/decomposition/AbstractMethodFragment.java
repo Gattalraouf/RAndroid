@@ -10,7 +10,7 @@ import AdaptedJDeodorant.core.ast.util.MethodDeclarationUtility;
 
 import java.util.*;
 
-import static Utils.PsiUtils.resolveMethod;
+import static AdaptedJDeodorant.Utils.PsiUtils.resolveMethod;
 
 public abstract class AbstractMethodFragment {
     private final AbstractMethodFragment parent;

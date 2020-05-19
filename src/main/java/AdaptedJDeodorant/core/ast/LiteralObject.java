@@ -7,7 +7,7 @@ import com.intellij.psi.SmartPsiElementPointer;
 import com.intellij.psi.impl.source.tree.java.PsiLiteralExpressionImpl;
 import com.intellij.psi.tree.IElementType;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class LiteralObject {
     private LiteralType literalType;

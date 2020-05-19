@@ -11,7 +11,7 @@ import AdaptedJDeodorant.core.ast.util.ExpressionExtractor;
 
 import java.util.*;
 
-import static Utils.PsiUtils.isPrimitive;
+import static AdaptedJDeodorant.Utils.PsiUtils.isPrimitive;
 
 public class PDGNode extends GraphNode implements Comparable<PDGNode> {
     private CFGNode cfgNode;

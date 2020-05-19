@@ -7,7 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import static Utils.PsiUtils.*;
+import static AdaptedJDeodorant.Utils.PsiUtils.*;
 
 public class ASTSlice {
     @NotNull

@@ -1,4 +1,4 @@
-package Utils;
+package AdaptedJDeodorant.Utils;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;

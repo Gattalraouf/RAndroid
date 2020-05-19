@@ -4,7 +4,7 @@ import com.intellij.psi.PsiMethodCallExpression;
 
 import java.util.List;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class MethodInvocationObject extends AbstractMethodInvocationObject {
 

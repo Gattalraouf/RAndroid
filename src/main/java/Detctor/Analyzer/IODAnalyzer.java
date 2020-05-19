@@ -5,10 +5,9 @@ import AdaptedJDeodorant.core.ast.decomposition.cfg.PDGNode;
 import com.intellij.psi.PsiStatement;
 import com.intellij.util.SmartList;
 
-import java.util.ArrayList;
 import java.util.Set;
 
-import static Utils.PsiUtils.isChild;
+import static AdaptedJDeodorant.Utils.PsiUtils.isChild;
 
 public class IODAnalyzer extends PaprikaAnalyzer {
 

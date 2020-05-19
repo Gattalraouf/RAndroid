@@ -5,7 +5,7 @@ import com.intellij.psi.PsiExpression;
 import com.intellij.psi.PsiReferenceExpression;
 import com.intellij.psi.SmartPsiElementPointer;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class LocalVariableInstructionObject {
     private final TypeObject type;

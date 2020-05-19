@@ -7,7 +7,7 @@ import com.intellij.refactoring.move.moveInstanceMethod.MoveInstanceMethodDialog
 import org.jetbrains.annotations.NotNull;
 import AdaptedJDeodorant.ide.fus.collectors.IntelliJDeodorantCounterCollector;
 import AdaptedJDeodorant.ide.refactoring.moveMethod.MoveMethodRefactoring;
-import Utils.PsiUtils;
+import AdaptedJDeodorant.Utils.PsiUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -10,7 +10,7 @@ import AdaptedJDeodorant.ide.fus.IntelliJDeodorantLogger;
 
 import java.util.concurrent.TimeUnit;
 
-import static Utils.PsiUtils.getNumberOfLinesInMethod;
+import static AdaptedJDeodorant.Utils.PsiUtils.getNumberOfLinesInMethod;
 
 public class IntelliJDeodorantCounterCollector {
     private IntelliJDeodorantCounterCollector() {

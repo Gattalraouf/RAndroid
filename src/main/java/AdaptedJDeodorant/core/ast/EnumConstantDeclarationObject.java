@@ -8,7 +8,7 @@ import AdaptedJDeodorant.core.ast.decomposition.AbstractExpression;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 class EnumConstantDeclarationObject {
     private final String name;

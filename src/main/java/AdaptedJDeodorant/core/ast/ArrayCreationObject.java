@@ -2,7 +2,7 @@ package AdaptedJDeodorant.core.ast;
 
 import com.intellij.psi.PsiNewExpression;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public class ArrayCreationObject extends CreationObject {
 

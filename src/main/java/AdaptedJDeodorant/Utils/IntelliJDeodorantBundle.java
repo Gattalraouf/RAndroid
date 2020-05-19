@@ -1,4 +1,4 @@
-package Utils;
+package AdaptedJDeodorant.Utils;
 
 import com.intellij.CommonBundle;
 import com.intellij.reference.SoftReference;
@@ -8,7 +8,7 @@ import java.lang.ref.Reference;
 import java.util.ResourceBundle;
 
 public final class IntelliJDeodorantBundle {
-    private static final String BUNDLE = "Utils.IntelliJDeodorantBundle";
+    private static final String BUNDLE = "AdaptedJDeodorant.Utils.IntelliJDeodorantBundle";
     private static Reference<ResourceBundle> INSTANCE;
 
     private IntelliJDeodorantBundle() {

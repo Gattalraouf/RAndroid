@@ -2,7 +2,7 @@ package AdaptedJDeodorant.core.ast.decomposition.cfg;
 
 import com.intellij.psi.*;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 public abstract class AbstractVariable {
     final SmartPsiElementPointer<PsiElement> origin; //Could be either PsiVariable or PsiClass in order to represent "this" element, that in Eclipse is instance of IVariableBinding, but not in IDEA.

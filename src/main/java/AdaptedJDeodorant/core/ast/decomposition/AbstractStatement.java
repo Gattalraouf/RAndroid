@@ -7,7 +7,7 @@ import com.intellij.psi.SmartPsiElementPointer;
 
 import java.util.List;
 
-import static Utils.PsiUtils.toPointer;
+import static AdaptedJDeodorant.Utils.PsiUtils.toPointer;
 
 /**
  * Represents a PsiStatement (the equivalent of Statement from Eclipse AST).
