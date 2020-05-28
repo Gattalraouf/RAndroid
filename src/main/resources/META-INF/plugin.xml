@@ -18,29 +18,29 @@
 
 
     <actions>
-        <group id="RAndroid.TopMenu"
+        <group id="RAndroid"
                text="_RAndroid"
                popup="true"
                description="RAndroid toolbar menu">
             <add-to-group group-id="RefactoringMenu" anchor="first"/>
 
-            <action id="IOD"
+            <action id="RAndroid.IOD"
                     class="UserInterface.Actions.RefactorIOD"
                     text="_Refactor IOD"
                     description="Refactoring IOD Code smell"/>
-            <action id="HSS"
+            <action id="RAndroid.HSS"
                     class="UserInterface.Actions.RefactorHSS"
                     text="_Refactor HSS"
                     description="Refactoring HSS Code smell"/>
-            <action id="RAM"
+            <action id="RAndroid.RAM"
                     class="UserInterface.Actions.RefactorRAM"
                     text="_Refactor RAM"
                     description="Refactoring RAM Code smell"/>
-            <action id="IDS"
+            <action id="RAndroid.IDS"
                     class="UserInterface.Actions.RefactorIDS"
                     text="_Refactor IDS"
                     description="Refactoring IDS Code smell"/>
-            <action id="UIO"
+            <action id="RAndroid.UIO"
                     class="UserInterface.Actions.RefactorUIO"
                     text="_Refactor UIO"
                     description="Refactoring UIO Code smell"/>
@@ -51,7 +51,7 @@
         <!-- Add your project components here -->
         <component>
             <implementation-class>
-                UserInterface.Components.IODSettingsScreen
+                UserInterface.Components.SettingsScreen
             </implementation-class>
         </component>
     </project-components>

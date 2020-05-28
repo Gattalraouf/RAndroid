@@ -27,7 +27,7 @@ public class SettingsScreen implements Serializable, ProjectComponent,
     public RAndroidAction action;
 
     public void openComponent() {
-        Project project = action.myProject;
+        Project project = RAndroidAction.myProject;
         SettingsUIDialog dialog = new SettingsUIDialog("Refactoring "+correctionUtility.getCodeSmellName()+" code smell",correctionUtility,project);
         dialog.pack();
         dialog.setSize(600, 200);

@@ -29,6 +29,6 @@ public class CSVPaprikaReadingManager extends CSVReadingManager{
             innerClass = classes[0].findInnerClassByName(InnerClass[1], false);
             targetC= innerClass;
         }
-        targetC= classes[0];
+        else targetC= classes[0];
     }
 }

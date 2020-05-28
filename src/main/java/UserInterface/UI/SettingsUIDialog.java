@@ -1,10 +1,6 @@
 package UserInterface.UI;
 
 import Corrector.ICorrector;
-import Corrector.Recommanding.IRecommander;
-import Corrector.Recommanding.UIORefactoringUtility;
-import Corrector.Refactoring.*;
-import UserInterface.Actions.*;
 import com.intellij.openapi.project.Project;
 
 import javax.swing.*;
@@ -26,10 +22,10 @@ public class SettingsUIDialog extends JDialog {
     private ICorrector correction;
     private Project myProject;
 
-    public SettingsUIDialog(String title,ICorrector corrector, Project project){
+    public SettingsUIDialog(String title, ICorrector corrector, Project project) {
         Title.setText(title);
-        this.correction=corrector;
-        this.myProject=project;
+        this.correction = corrector;
+        this.myProject = project;
         createComponent();
     }
 

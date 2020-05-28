@@ -1,6 +1,5 @@
 package UserInterface.Actions;
 
-import UserInterface.Components.HSSSettingsScreen;
 import UserInterface.Components.SettingsScreen;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
