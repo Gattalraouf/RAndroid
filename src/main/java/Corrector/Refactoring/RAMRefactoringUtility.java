@@ -19,9 +19,16 @@ public class RAMRefactoringUtility extends IRefactor {
     @Override
     public void onRefactor(String filePath, String title, Project myProject) {
         analyzer = new RAMAnalyzer(filePath, myProject);
+        boolean repeat = false;
 
-        for (MethodInvocationObject invok : ((RAMAnalyzer)analyzer).getCandidates().keySet()) {
-            replaceSetRepeating(invok, myProject, ((RAMAnalyzer)analyzer).getCandidates().get(invok));
+        for (String invok : ((RAMAnalyzer)analyzer).getCandidates().keySet()) {
+            replaceSetRepeating(((RAMAnalyzer)analyzer).getCandidates().get(invok), myProject, invok);
+            if (((RAMAnalyzer)analyzer).getCandidates().get(invok).getMethodName().equals("setRepeating")) {
+                repeat = true;
+            }
+        }
+        if (repeat) {
+            onRefactor(filePath, title, myProject);
         }
     }
 
@@ -31,10 +38,11 @@ public class RAMRefactoringUtility extends IRefactor {
             WriteCommandAction.runWriteCommandAction(myProject, () -> {
                 PsiExpression[] list = invok.getMethodInvocation().getArgumentList().getExpressions();
                 PsiStatement callExpression = factory.createStatementFromText(
-                        var + ".setInexactRepeating ( " +
+                        var.split(" ")[0] + ".setInexactRepeating ( " +
                                 list[0].getText() + " , " + list[1].getText() + " , " + list[2].getText()
-                                + " , " + list[3].getText() + " );", invok.getMethodInvocation());
+                                + " , " + list[3].getText() + " )", invok.getMethodInvocation());
                 invok.getMethodInvocation().replace(callExpression);
+
             });
         }
     }
