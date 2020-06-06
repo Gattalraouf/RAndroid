@@ -12,15 +12,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public class SettingsUIDialog extends JDialog {
-    private JPanel contentPane;
-    private JButton buttonOK;
-    private JButton buttonCancel;
-    private JTextField SelectedPath;
-    private JButton buttonLoadFile;
-    private JLabel Title;
+    private JPanel contentPane=new JPanel();
+    private JButton buttonOK= new JButton();
+    private JButton buttonCancel= new JButton();
+    private JTextField SelectedPath=new JTextField();
+    private JButton buttonLoadFile= new JButton();
+    private JLabel Title=new JLabel();
     public String filePath = "";
     private ICorrector correction;
-    private Project myProject;
+    protected static Project myProject;
 
     public SettingsUIDialog(String title, ICorrector corrector, Project project) {
         Title.setText(title);
@@ -28,6 +28,11 @@ public class SettingsUIDialog extends JDialog {
         this.myProject = project;
         createComponent();
     }
+
+    public Project getMyProject(){
+        return myProject;
+    }
+
 
     public void createComponent() {
         setContentPane(contentPane);

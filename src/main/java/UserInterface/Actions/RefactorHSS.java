@@ -12,4 +12,6 @@ public class RefactorHSS extends RAndroidAction {
         screen = new HSSSettingsScreen(this);
         screen.openComponent();
     }
+
+
 }

@@ -20,5 +20,6 @@ public abstract class IAnalyzer {
         return this;
     }
 
+
     public abstract void findClass();
 }

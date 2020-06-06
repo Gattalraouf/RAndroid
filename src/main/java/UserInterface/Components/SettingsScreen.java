@@ -35,6 +35,10 @@ public class SettingsScreen implements Serializable, ProjectComponent,
         dialog.setVisible(true);
     }
 
+    public ICorrector getCorrectionUtility(){
+        return correctionUtility;
+    }
+
     @Nullable
     @Override
     public SettingsScreen getState() {
