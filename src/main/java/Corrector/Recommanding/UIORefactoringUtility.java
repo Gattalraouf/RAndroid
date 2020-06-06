@@ -44,6 +44,7 @@ public class UIORefactoringUtility extends IRecommander {
                     !invocationObject.getMethodName().equals("drawRGB") &&
                     !invocationObject.getMethodName().contains("Text") &&
                     !invocationObject.getMethodName().contains("Paint") &&
+                    !invocationObject.getMethodName().contains("Bitmap") &&
                     invocationObject.getMethodName().contains("draw")) {
 
                 NRectDraw++;
