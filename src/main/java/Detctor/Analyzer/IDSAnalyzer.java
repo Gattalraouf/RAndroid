@@ -27,35 +27,17 @@ public class IDSAnalyzer extends aDoctorAnalyzer {
         return HachMapVariables;
     }
 
-    public void setHachMapVariables(ArrayList<ArrayList<PsiVariable>> hachMapVariables) {
-        HachMapVariables = hachMapVariables;
-    }
-
     public ArrayList<ArrayList<PsiTypeElement>> getHachMapReturns() {
         return HachMapReturns;
-    }
-
-    public void setHachMapReturns(ArrayList<ArrayList<PsiTypeElement>> hachMapReturns) {
-        HachMapReturns = hachMapReturns;
     }
 
     public ArrayList<ArrayList<PsiStatement>> getForStatements() {
         return ForStatements;
     }
 
-    public void setForStatements(ArrayList<ArrayList<PsiStatement>> forStatements) {
-        ForStatements = forStatements;
-    }
-
     public ArrayList<ClassObject> getIdsClasses() {
         return idsClasses;
     }
-
-    public void setIdsClasses(ArrayList<ClassObject> idsClasses) {
-        this.idsClasses = idsClasses;
-    }
-
-
 
     private void getIDSCandidates(String filePath, Project myProject) {
         ArrayList<ClassObject> idsClasses;

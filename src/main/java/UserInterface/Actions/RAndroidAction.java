@@ -15,4 +15,12 @@ public class RAndroidAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
         myProject = (Project) e.getDataContext().getData(DataConstants.PROJECT);
     }
+
+    public SettingsScreen getScreen(){
+        return screen;
+    }
+
+    public Project getMyProject(){
+        return myProject;
+    }
 }
