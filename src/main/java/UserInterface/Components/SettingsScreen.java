@@ -25,14 +25,19 @@ public class SettingsScreen implements Serializable, ProjectComponent,
 
     public ICorrector correctionUtility;
     public RAndroidAction action;
+    public SettingsUIDialog dialog=null;
 
     public void openComponent() {
-        Project project = RAndroidAction.myProject;
-        SettingsUIDialog dialog = new SettingsUIDialog("Refactoring "+correctionUtility.getCodeSmellName()+" code smell",correctionUtility,project);
+        Project project = action.getMyProject();
+        dialog = new SettingsUIDialog("Refactoring "+correctionUtility.getCodeSmellName()+" code smell",correctionUtility,project);
         dialog.pack();
         dialog.setSize(600, 200);
         dialog.setLocationRelativeTo(null);
         dialog.setVisible(true);
+    }
+
+    public SettingsUIDialog getDialog(){
+        return dialog;
     }
 
     public ICorrector getCorrectionUtility(){
