@@ -121,6 +121,7 @@ public class UIORefactoringUtility extends IRecommander {
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
             clipRect(method, c, myProject);
+            //TODO Higlight the zone we are fixing
         }
     }
 }

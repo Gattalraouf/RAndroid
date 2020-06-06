@@ -21,6 +21,10 @@ public class IDSRefactoringUtility extends IRefactor {
         analyzer = new IDSAnalyzer(filePath, myProject);
         int i = 0;
 
+        //TODO Handle the long case (by casting it to int)
+        //TODO Handle importing Sparse Array
+        //TODO Handle the initilization of the fixed variables
+        //TODO Higlight the zone we are fixing
         for (ClassObject idsClass : ((IDSAnalyzer)analyzer).getIdsClasses()) {
             HashMapToSparseArray(((IDSAnalyzer)analyzer).getHachMapVariables().get(i), ((IDSAnalyzer)analyzer).getHachMapReturns().get(i), ((IDSAnalyzer)analyzer).getForStatements().get(i), idsClass, myProject);
             i++;

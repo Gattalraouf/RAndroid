@@ -30,6 +30,9 @@ public class RAMRefactoringUtility extends IRefactor {
         if (repeat) {
             onRefactor(filePath, title, myProject);
         }
+
+        //TODO Handle the ones inside listeners and sub methods
+        //TODO Higlight the zone we are fixing
     }
 
     private void replaceSetRepeating(MethodInvocationObject invok, Project myProject, String var) {
