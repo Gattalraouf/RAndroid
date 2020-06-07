@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class RAMAnalyzer extends aDoctorAnalyzer {
 
-    private HashMap<MethodInvocationObject, String> candidates;
+    public HashMap<MethodInvocationObject, String> candidates;
 
     public RAMAnalyzer(String filePath, Project myProject) {
         super(filePath);
@@ -21,12 +21,13 @@ public class RAMAnalyzer extends aDoctorAnalyzer {
         this.candidates = getRAMCandidates(filePath, myProject);
     }
 
-    public HashMap<MethodInvocationObject, String> getCandidates() {
-        return candidates;
+    public RAMAnalyzer(String filepath){
+        super(filepath);
+        codeSmell="RAM";
     }
 
-    public void setCandidates(HashMap<MethodInvocationObject, String> candidates) {
-        this.candidates = candidates;
+    public HashMap<MethodInvocationObject, String> getCandidates() {
+        return candidates;
     }
 
     private HashMap<MethodInvocationObject, String> getRAMCandidates(String filePath, Project myProject) {

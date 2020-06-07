@@ -17,6 +17,10 @@ public class aDoctorAnalyzer extends IAnalyzer {
         CSVReader = new CSVaDoctorReadingManager();
     }
 
+    public aDoctorAnalyzer(){
+        CSVReader = new CSVaDoctorReadingManager();
+    }
+
 
     @Override
     public void findClass() {

@@ -12,4 +12,5 @@ class HSSAnalyzerTest {
         HSSAnalyzer a=new HSSAnalyzer("");
         assertEquals("onStartCommand",a.getTargetMethodName(target));
     }
+
 }

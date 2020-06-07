@@ -23,6 +23,11 @@ public class IDSAnalyzer extends aDoctorAnalyzer {
         getIDSCandidates(filePath, myProject);
     }
 
+    public IDSAnalyzer(String filePath) {
+        super(filePath);
+        codeSmell="IDS";
+    }
+
     public ArrayList<ArrayList<PsiVariable>> getHachMapVariables() {
         return HachMapVariables;
     }

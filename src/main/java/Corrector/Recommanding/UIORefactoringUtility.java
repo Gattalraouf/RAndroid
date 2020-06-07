@@ -18,6 +18,9 @@ import java.util.Set;
 
 public class UIORefactoringUtility extends IRecommander {
 
+    public boolean refactored=false;
+
+
     public UIORefactoringUtility(){
         codeSmellName="UIO";
     }
@@ -120,6 +123,7 @@ public class UIORefactoringUtility extends IRecommander {
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
             clipRect(method, c, myProject);
+            refactored=true;
         }
     }
 }

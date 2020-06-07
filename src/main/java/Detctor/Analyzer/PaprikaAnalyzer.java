@@ -8,11 +8,15 @@ import com.intellij.psi.PsiClass;
 
 import java.util.ArrayList;
 
-public abstract class PaprikaAnalyzer extends IAnalyzer {
+public class  PaprikaAnalyzer extends IAnalyzer {
     protected PsiClass targetClass;
 
     public PaprikaAnalyzer(String filepath) {
         super(filepath);
+        CSVReader= new CSVPaprikaReadingManager();
+    }
+
+    public PaprikaAnalyzer(){
         CSVReader= new CSVPaprikaReadingManager();
     }
 
@@ -29,7 +33,7 @@ public abstract class PaprikaAnalyzer extends IAnalyzer {
         return CSVReadingManager.ReadFile(filePath);
     }
 
-    public  String getTargetMethodName(String[] target){
+    public String getTargetMethodName(String[] target){
         String[] targetDetails =target[index].split("#", 0);
         return targetDetails[0];
     }

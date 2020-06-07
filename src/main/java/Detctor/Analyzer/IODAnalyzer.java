@@ -2,6 +2,7 @@ package Detctor.Analyzer;
 
 import AdaptedJDeodorant.core.ast.decomposition.cfg.ASTSlice;
 import AdaptedJDeodorant.core.ast.decomposition.cfg.PDGNode;
+import Corrector.Refactoring.IODRefactoringUtility;
 import com.intellij.psi.PsiStatement;
 import com.intellij.util.SmartList;
 
@@ -13,6 +14,11 @@ public class IODAnalyzer extends PaprikaAnalyzer {
 
     public IODAnalyzer(String filepath){
         super(filepath);
+        this.codeSmell="IOD";
+    }
+
+    public IODAnalyzer(){
+        super();
         this.codeSmell="IOD";
     }
 

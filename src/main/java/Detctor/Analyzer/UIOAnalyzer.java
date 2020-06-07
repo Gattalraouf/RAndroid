@@ -7,4 +7,9 @@ public class UIOAnalyzer extends PaprikaAnalyzer {
         this.codeSmell="UIO";
     }
 
+    public UIOAnalyzer(){
+        super();
+        this.codeSmell="UIO";
+    }
+
 }
