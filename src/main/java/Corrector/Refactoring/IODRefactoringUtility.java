@@ -60,6 +60,10 @@ public class IODRefactoringUtility extends IRefactor {
             JDeodorantFacade.processMethodForInstances(candidates, c, c.getMethodByName(methods[0].getName()));
             extractMethod(candidates, myProject);
 
+            //TODO Handle long code
+            //TODO highlight the zone of code we are working on
+
+
         }
 
     }

@@ -37,6 +37,8 @@ public class HSSRefactoringUtility extends IRefactor {
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
 
+            //TODO Handle importing Handler thread and Handler
+            //TODO Higlight the zone we are fixing
             RunServiceOnBackground(method, c, myProject);
 
         }

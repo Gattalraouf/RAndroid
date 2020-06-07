@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class RAMAnalyzer extends aDoctorAnalyzer {
 
-    public HashMap<MethodInvocationObject, String> candidates;
+    private HashMap<String, MethodInvocationObject> candidates;
 
     public RAMAnalyzer(String filePath, Project myProject) {
         super(filePath);
@@ -21,26 +21,32 @@ public class RAMAnalyzer extends aDoctorAnalyzer {
         this.candidates = getRAMCandidates(filePath, myProject);
     }
 
-    public RAMAnalyzer(String filepath){
-        super(filepath);
-        codeSmell="RAM";
-    }
-
-    public HashMap<MethodInvocationObject, String> getCandidates() {
+    public HashMap<String, MethodInvocationObject> getCandidates() {
         return candidates;
     }
 
-    private HashMap<MethodInvocationObject, String> getRAMCandidates(String filePath, Project myProject) {
+    public void setCandidates(HashMap<String, MethodInvocationObject> candidates) {
+        this.candidates = candidates;
+    }
+
+    private HashMap<String, MethodInvocationObject> getRAMCandidates(String filePath, Project myProject) {
 
         ArrayList<ClassObject> ramClasses;
-        HashMap<MethodInvocationObject, String> candidates = new HashMap<>();
+        HashMap<String, MethodInvocationObject> candidates = new HashMap<>();
+        HashMap<AbstractVariable, LinkedHashSet<MethodInvocationObject>> InvokeCandidates = new HashMap<>();
         ramClasses = ((aDoctorAnalyzer)getTargetClass(null,filePath," ",myProject)).getClasses();
+        int i = 0;
         for (ClassObject ramClass : ramClasses) {
             for (MethodObject method : ramClass.getMethodList()) {
-                for (Map.Entry<AbstractVariable, LinkedHashSet<MethodInvocationObject>> usedVariable : method.getMethodBody().getInvokedMethodsThroughLocalVariables().entrySet()) {
+                InvokeCandidates = new HashMap<>();
+                InvokeCandidates.putAll(method.getMethodBody().getInvokedMethodsThroughLocalVariables());
+                InvokeCandidates.putAll(method.getMethodBody().getInvokedMethodsThroughFields());
+                InvokeCandidates.putAll(method.getMethodBody().getInvokedMethodsThroughParameters());
+                for (Map.Entry<AbstractVariable, LinkedHashSet<MethodInvocationObject>> usedVariable : InvokeCandidates.entrySet()) {
                     if (usedVariable.getKey().getType().equals("android.app.AlarmManager")) {
                         for (MethodInvocationObject invok : usedVariable.getValue()) {
-                            candidates.put(invok, usedVariable.getKey().getName());
+                            i++;
+                            candidates.put(usedVariable.getKey().getName()+" "+i,invok);
                         }
                     }
                 }

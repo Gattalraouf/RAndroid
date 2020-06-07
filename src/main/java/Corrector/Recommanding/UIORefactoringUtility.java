@@ -47,6 +47,7 @@ public class UIORefactoringUtility extends IRecommander {
                     !invocationObject.getMethodName().equals("drawRGB") &&
                     !invocationObject.getMethodName().contains("Text") &&
                     !invocationObject.getMethodName().contains("Paint") &&
+                    !invocationObject.getMethodName().contains("Bitmap") &&
                     invocationObject.getMethodName().contains("draw")) {
 
                 NRectDraw++;
@@ -123,7 +124,11 @@ public class UIORefactoringUtility extends IRecommander {
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
             clipRect(method, c, myProject);
+<<<<<<< HEAD
             refactored=true;
+=======
+            //TODO Higlight the zone we are fixing
+>>>>>>> 204a681c3996c5463109dee61c5a66e5cb2a26ef
         }
     }
 }
