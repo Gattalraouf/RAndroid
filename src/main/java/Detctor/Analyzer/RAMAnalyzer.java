@@ -21,6 +21,7 @@ public class RAMAnalyzer extends aDoctorAnalyzer {
         this.candidates = getRAMCandidates(filePath, myProject);
     }
 
+
     public HashMap<String, MethodInvocationObject> getCandidates() {
         return candidates;
     }
