@@ -1,5 +1,6 @@
 package Corrector.Refactoring;
 
+import AdaptedJDeodorant.Utils.PsiUtils;
 import AdaptedJDeodorant.core.ast.ClassObject;
 import Detctor.Analyzer.IDSAnalyzer;
 import Detctor.Analyzer.aDoctorAnalyzer;
@@ -22,7 +23,6 @@ public class IDSRefactoringUtility extends IRefactor {
         int i = 0;
 
         //TODO Handle the long case (by casting it to int)
-        //TODO Handle importing Sparse Array
         //TODO Handle the initilization of the fixed variables
         //TODO Higlight the zone we are fixing
         for (ClassObject idsClass : ((IDSAnalyzer)analyzer).getIdsClasses()) {
@@ -35,6 +35,8 @@ public class IDSRefactoringUtility extends IRefactor {
     private void HashMapToSparseArray(ArrayList<PsiVariable> hachMapVariables, ArrayList<PsiTypeElement> hachMapReturns, ArrayList<PsiStatement> forStatements, ClassObject idsClass, Project myProject) {
         PsiJavaFile file = idsClass.getPsiFile();
         PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
+
+        PsiUtils.addImport(factory,file,"android.util");
 
         WriteCommandAction.runWriteCommandAction(myProject, () -> {
             PsiTypeElement newType;
