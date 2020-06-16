@@ -29,6 +29,8 @@ public class UIORefactoringUtility extends IRecommander {
         PsiJavaFile file = c.getPsiFile();
         int NRectDraw = 0, NClipRect = 0, Ntranslation = 0, NRotation = 0, NDrawPath = 0, NclipPath = 0;
 
+        onDraw.getMethodDeclaration().navigate(true);
+
         PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
         MethodBodyObject body = onDraw.getMethodBody();
         Set<MethodInvocationObject> canvasInvokes = body.getInvokedMethodsThroughParameters().get(new PlainVariable(onDraw.getParameter(0).getVariableDeclaration()));
@@ -126,7 +128,6 @@ public class UIORefactoringUtility extends IRecommander {
             clipRect(method, c, myProject);
 
             refactored=true;
-            //TODO Higlight the zone we are fixing
 
         }
     }

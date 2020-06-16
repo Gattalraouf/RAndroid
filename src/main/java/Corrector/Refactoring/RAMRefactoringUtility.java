@@ -30,7 +30,7 @@ public class RAMRefactoringUtility extends IRefactor {
         if (repeat) {
             onRefactor(filePath, title, myProject);
         }
-        
+
         //TODO Higlight the zone we are fixing
     }
 

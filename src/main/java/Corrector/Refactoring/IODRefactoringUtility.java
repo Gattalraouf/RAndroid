@@ -61,8 +61,6 @@ public class IODRefactoringUtility extends IRefactor {
             extractMethod(candidates, myProject);
 
             //TODO Handle long code
-            //TODO highlight the zone of code we are working on
-
 
         }
 
