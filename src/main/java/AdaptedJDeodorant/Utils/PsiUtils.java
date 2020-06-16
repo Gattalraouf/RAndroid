@@ -1,5 +1,6 @@
 package AdaptedJDeodorant.Utils;
 
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectFileIndex;
@@ -206,6 +207,36 @@ public class PsiUtils {
     public static int getMethodStatementCount(PsiMethod psiMethod) {
         PsiCodeBlock codeBlock = psiMethod.getBody();
         return codeBlock == null ? 0 : codeBlock.getStatementCount();
+    }
+
+    public static void addImport(PsiElementFactory elementFactory, final PsiFile file, String fullyQualifiedName) {
+
+        if (!(file instanceof PsiJavaFile)) {
+            return;
+        }
+        final PsiJavaFile javaFile = (PsiJavaFile) file;
+
+        final PsiImportList importList = javaFile.getImportList();
+        if (importList == null) {
+            return;
+        }
+
+        // Check if already imported
+        for (PsiImportStatementBase is : importList.getAllImportStatements()) {
+            String impQualifiedName = is.getImportReference().getQualifiedName();
+            if (fullyQualifiedName.equals(impQualifiedName)) {
+                return; // Already imported so nothing needed
+            }
+
+        }
+
+
+        // Not imported yet so add it
+        WriteCommandAction.runWriteCommandAction(file.getProject(), () -> {
+            PsiImportStatement importStatement = elementFactory.createImportStatementOnDemand(fullyQualifiedName);
+            importList.add(importStatement);
+        });
+
     }
 
 }
