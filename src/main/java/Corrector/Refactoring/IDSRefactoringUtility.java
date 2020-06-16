@@ -24,8 +24,9 @@ public class IDSRefactoringUtility extends IRefactor {
 
         //TODO Handle the long case (by casting it to int)
         //TODO Handle the initilization of the fixed variables
-        //TODO Higlight the zone we are fixing
+
         for (ClassObject idsClass : ((IDSAnalyzer)analyzer).getIdsClasses()) {
+            idsClass.getPsiClass().navigate(true);
             HashMapToSparseArray(((IDSAnalyzer)analyzer).getHachMapVariables().get(i), ((IDSAnalyzer)analyzer).getHachMapReturns().get(i), ((IDSAnalyzer)analyzer).getForStatements().get(i), idsClass, myProject);
             i++;
         }
@@ -61,6 +62,8 @@ public class IDSRefactoringUtility extends IRefactor {
                 type = type.replaceAll("HashMap<Integer,", "SparseArray<");
                 newType = factory.createTypeElementFromText(type, file);
                 hachMapVariable.getTypeElement().replace(newType);
+
+                hachMapVariable.navigate(true);
 
                 if (hachMapVariable.getInitializer() != null) {
                     // replace the initializer by new SparseArray<>()
