@@ -38,7 +38,7 @@ public class HSSRefactoringUtility extends IRefactor {
             c = astReader.getSystemObject().getClassObject(innerClass.getQualifiedName());
             method = c.getMethodByName(methods[0].getName());
 
-            //TODO Higlight the zone we are fixing
+            method.getMethodDeclaration().navigate(true);
             RunServiceOnBackground(method, c, myProject);
 
         }
