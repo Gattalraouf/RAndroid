@@ -5,10 +5,8 @@ import Detctor.Analyzer.IODAnalyzer;
 import Detctor.Analyzer.RAMAnalyzer;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiExpression;
-import com.intellij.psi.PsiStatement;
+import com.intellij.pom.Navigatable;
+import com.intellij.psi.*;
 
 public class RAMRefactoringUtility extends IRefactor {
 
@@ -37,6 +35,13 @@ public class RAMRefactoringUtility extends IRefactor {
     private void replaceSetRepeating(MethodInvocationObject invok, Project myProject, String var) {
         PsiElementFactory factory = JavaPsiFacade.getElementFactory(myProject);
         if (invok.getMethodName().equals("setRepeating")) {
+
+            PsiElement navigationElement = invok.getMethodInvocation().getNavigationElement();
+            if (navigationElement instanceof Navigatable && ((Navigatable) navigationElement).canNavigate())
+            {
+                ((Navigatable) navigationElement).navigate(true);
+            }
+
             WriteCommandAction.runWriteCommandAction(myProject, () -> {
                 PsiExpression[] list = invok.getMethodInvocation().getArgumentList().getExpressions();
                 PsiStatement callExpression = factory.createStatementFromText(
