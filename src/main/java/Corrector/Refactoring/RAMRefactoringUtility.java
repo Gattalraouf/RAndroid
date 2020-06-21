@@ -29,7 +29,6 @@ public class RAMRefactoringUtility extends IRefactor {
             onRefactor(filePath, title, myProject);
         }
 
-        //TODO Higlight the zone we are fixing
     }
 
     private void replaceSetRepeating(MethodInvocationObject invok, Project myProject, String var) {

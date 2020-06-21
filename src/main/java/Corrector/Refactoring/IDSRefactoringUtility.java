@@ -3,11 +3,9 @@ package Corrector.Refactoring;
 import AdaptedJDeodorant.Utils.PsiUtils;
 import AdaptedJDeodorant.core.ast.ClassObject;
 import Detctor.Analyzer.IDSAnalyzer;
-import Detctor.Analyzer.aDoctorAnalyzer;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.sun.xml.bind.v2.model.core.ID;
 
 import java.util.ArrayList;
 

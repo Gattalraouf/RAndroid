@@ -1,5 +1,8 @@
 package AdaptedJDeodorant.Utils;
 
+import AdaptedJDeodorant.core.ast.decomposition.AbstractStatement;
+import AdaptedJDeodorant.core.ast.decomposition.CompositeStatementObject;
+import AdaptedJDeodorant.core.ast.decomposition.StatementObject;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -237,6 +240,18 @@ public class PsiUtils {
             importList.add(importStatement);
         });
 
+    }
+
+    public static int countLOC(CompositeStatementObject compositeStatementObject) {
+        int count = 1;
+        for (AbstractStatement statement : compositeStatementObject.getStatements()) {
+            if (statement instanceof CompositeStatementObject) {
+                count = count + countLOC((CompositeStatementObject) statement);
+            } else if (statement instanceof StatementObject) {
+                count++;
+            }
+        }
+        return count;
     }
 
 }
