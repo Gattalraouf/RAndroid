@@ -1,12 +1,33 @@
 <idea-plugin>
     <id>pfe.esi.Gattal-Hammache.RAndroid</id>
-    <name>Randroid</name>
-    <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+    <name>RAndroid</name>
+    <vendor email="fa_gattal@esi.dz" url="https://www.raouf.codes/">Gattal-Hammache</vendor>
 
     <description><![CDATA[
-    Enter short description for your plugin here.<br>
-    <em>most HTML tags may be used</em>
+    Refactor code smells in Android Java code and/or recommends appropriate refactorings to resolve them.
+    <br/>
+        <p>The plugin Supports the following code smells:
+            <br/> Automatic refactoring:
+            <ul>
+               <li>Init OnDraw (IOD)</li>
+               <li>Heavy Start Service (HSS)</li>
+               <li>Rigid AlarmManager (RAM)</li>
+               <li>Inefficient Data Structure (IDS)</li>
+            </ul>
+            <br/>
+            <br/> Giving Recommendations:
+            <ul>
+               <li>UI OverDraw (UIO)</li>
+            </ul>
+        </p>
+        <br/>The plugin adapts the logic behind JDeodorant.
+
+        <br/>
+        <br/>PS: Detection should be made manually by the developer using either aDoctor or Paprika & than the resulting
+        files should be uploaded to the plugin.
     ]]></description>
+
+    <idea-version since-build="192.7142.36"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

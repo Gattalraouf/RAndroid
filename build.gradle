@@ -50,8 +50,10 @@ intellij {
     // Require the Android plugin, Gradle will match the plugin version to intellij.version
     plugins 'java'
     //alternativeIdePath '/Applications/Android Studio.app/Contents/'
-    alternativeIdePath '/snap/android-studio/88/android-studio/'
+    alternativeIdePath '/snap/android-studio/91/android-studio/'
 }
+
+publishPlugin {    token intellijPublishToken}
 
 patchPluginXml {
     changeNotes """
