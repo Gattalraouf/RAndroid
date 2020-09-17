@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>pfe.esi.Gattal-Hammache.RAndroid</id>
     <name>RAndroid</name>
-    <vendor email="fa_gattal@esi.dz" url="https://www.raouf.codes/">Gattal-Hammache</vendor>
+    <vendor email="fa_gattal@esi.dz">Gattal-Hammache</vendor>
 
     <description><![CDATA[
     Refactor code smells in Android Java code and/or recommends appropriate refactorings to resolve them.
@@ -32,6 +32,7 @@
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
