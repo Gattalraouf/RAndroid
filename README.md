@@ -2,6 +2,10 @@
 An Android Studio plugin for code smell refactoring. It is able to fix 4 Android-specific code smells and/or recommends appropriate refactorings to resolve them.
 
 
+<p align="center">
+  <img width="460" height="300" alt="RAndroid logo" src="https://plugins.jetbrains.com/files/15058/97180/icon/pluginIcon.svg">
+</p>
+
 The plugin Supports the following code smells:
 
 ### Automatic refactoring:
