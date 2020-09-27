@@ -1,5 +1,5 @@
 # RAndroid
-An Android Studio plugin for code smell refactoring. It is able to fix 4 Android-specific code smells and/or recommends appropriate refactorings to resolve them.
+An Android Studio plugin for code smell refactoring. It is able to fix Android-specific code smells and/or recommends appropriate refactorings to resolve them.
 
 
 <p align="center">
